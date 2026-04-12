@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.database import engine, Base
+from app.routes.auth import router as auth_router
 from app.routes.certificates import router as certificates_router
 from app.routes.health import router as health_router
 
@@ -34,4 +35,5 @@ app.add_middleware(
 )
 
 app.include_router(health_router)
+app.include_router(auth_router, prefix="/api/auth", tags=["auth"])
 app.include_router(certificates_router, prefix="/api/certificates", tags=["certificates"])

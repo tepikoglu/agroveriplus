@@ -3,6 +3,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.database import get_db
+from app.deps import get_current_user_optional
+from app.models.user import User
 from app.schemas import CertificateUploadResponse, VerifyRequest, VerifyResponse
 from app.services.certificate_service import (
     compute_sha256,
@@ -21,6 +23,7 @@ MAX_UPLOAD_BYTES = settings.max_upload_size_mb * 1024 * 1024
 async def upload_certificate(
     file: UploadFile = File(...),
     db: AsyncSession = Depends(get_db),
+    current_user: User | None = Depends(get_current_user_optional),
 ):
     """Upload a certificate file and generate its SHA-256 hash + QR data."""
     # Validate extension
