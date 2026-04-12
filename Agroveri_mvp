@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>AgroVeri+ | Organik Sertifika Doğrulama</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Source+Sans+3:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<style>
+:root {
+  --green: #2D6A4F;
+  --green-dark: #1B4332;
+  --green-light: #B7E4C7;
+  --cream: #FEFAE0;
+  --cream-dark: #E8E4D9;
+  --amber: #DDA15E;
+  --amber-light: #F0D9A8;
+  --red: #BC4749;
+  --white: #FFFFFF;
+  --text: #1B4332;
+  --text-dim: #5C7A65;
+  --font-display: 'DM Serif Display', serif;
+  --font-body: 'Source Sans 3', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--cream);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* NAV */
+.nav {
+  background: var(--green-dark);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.nav-logo-icon {
+  width: 32px; height: 32px;
+  background: var(--green);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.nav-logo h1 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--white);
+  font-weight: 400;
+}
+.nav-logo h1 span { color: var(--green-light); }
+.nav-tabs {
+  display: flex;
+  gap: 4px;
+}
+.nav-tab {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: rgba(255,255,255,0.6);
+  font-family: var(--font-body);
+  transition: all 0.2s;
+}
+.nav-tab.active {
+  background: var(--green);
+  color: var(--white);
+}
+.nav-tab:hover:not(.active) {
+  color: var(--white);
+  background: rgba(255,255,255,0.1);
+}
+
+/* LAYOUT */
+.container {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 24px 16px 80px;
+}
+.page { display: none; }
+.page.active { display: block; }
+
+/* CARDS */
+.card {
+  background: var(--white);
+  border: 1px solid var(--cream-dark);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 8px rgba(27,67,50,0.06);
+}
+.card-header {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--green-dark);
+  margin-bottom: 8px;
+}
+.card-sub {
+  font-size: 14px;
+  color: var(--text-dim);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+/* STEPS */
+.steps {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  margin-bottom: 24px;
+  padding: 0 20px;
+}
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+}
+.step::after {
+  content: '';
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--cream-dark);
+  z-index: 0;
+}
+.step:last-child::after { display: none; }
+.step.done::after { background: var(--green); }
+.step-num {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700;
+  background: var(--cream-dark);
+  color: var(--text-dim);
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s;
+}
+.step.active .step-num {
+  background: var(--green);
+  color: var(--white);
+  box-shadow: 0 0 0 4px rgba(45,106,79,0.15);
+}
+.step.done .step-num {
+  background: var(--green);
+  color: var(--white);
+}
+.step-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 6px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.step.active .step-label,
+.step.done .step-label { color: var(--green); }
+
+/* UPLOAD AREA */
+.upload-area {
+  border: 2px dashed var(--cream-dark);
+  border-radius: 12px;
+  padding: 40px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--cream);
+}
+.upload-area:hover, .upload-area.dragover {
+  border-color: var(--green);
+  background: rgba(183,228,199,0.2);
+}
+.upload-icon { font-size: 36px; margin-bottom: 12px; }
+.upload-text { font-size: 15px; color: var(--text-dim); }
+.upload-hint { font-size: 12px; color: var(--text-dim); margin-top: 8px; opacity: 0.7; }
+.upload-btns {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+/* BUTTONS */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: var(--font-body);
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+  min-height: 48px;
+}
+.btn-primary {
+  background: var(--green);
+  color: var(--white);
+  width: 100%;
+}
+.btn-primary:hover { background: var(--green-dark); }
+.btn-primary:disabled {
+  background: var(--cream-dark);
+  color: var(--text-dim);
+  cursor: not-allowed;
+}
+.btn-outline {
+  background: transparent;
+  color: var(--green);
+  border: 2px solid var(--green);
+}
+.btn-outline:hover {
+  background: var(--green);
+  color: var(--white);
+}
+.btn-sm {
+  padding: 10px 16px;
+  font-size: 13px;
+  min-height: 40px;
+}
+.btn-amber {
+  background: var(--amber);
+  color: var(--green-dark);
+}
+.btn-group {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+.btn-group .btn { flex: 1; }
+
+/* FILE INFO */
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--cream);
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+.file-icon {
+  width: 40px; height: 40px;
+  background: var(--green-light);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.file-name { font-size: 14px; font-weight: 600; word-break: break-all; }
+.file-size { font-size: 12px; color: var(--text-dim); }
+
+/* HASH BOX */
+.hash-box {
+  background: var(--green-dark);
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 12px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.hash-label {
+  font-size: 10px;
+  color: var(--green-light);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.hash-value {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--green-light);
+  word-break: break-all;
+  line-height: 1.5;
+}
+.hash-copy {
+  background: var(--green);
+  border: none;
+  color: var(--green-light);
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  flex-shrink: 0;
+  font-family: var(--font-body);
+}
+.hash-copy:hover { background: rgba(255,255,255,0.15); }
+
+/* QR DISPLAY */
+.qr-container {
+  text-align: center;
+  padding: 24px;
+  background: var(--white);
+  border: 2px solid var(--amber);
+  border-radius: 12px;
+  margin: 16px 0;
+  position: relative;
+}
+.qr-container::before {
+  content: '🌿 AgroVeri+ Doğrulanmış';
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--amber);
+  color: var(--green-dark);
+  padding: 4px 16px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+#qrcode-display {
+  display: inline-block;
+  padding: 12px;
+  background: var(--white);
+  border-radius: 8px;
+  margin-top: 8px;
+}
+#qrcode-display canvas, #qrcode-display img {
+  border-radius: 4px;
+}
+.qr-hint {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-top: 12px;
+  line-height: 1.5;
+}
+
+/* VERIFICATION RESULT */
+.result-card {
+  text-align: center;
+  padding: 32px 24px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+.result-card.success {
+  background: rgba(45,106,79,0.08);
+  border: 2px solid var(--green);
+}
+.result-card.fail {
+  background: rgba(188,71,73,0.08);
+  border: 2px solid var(--red);
+}
+.result-icon { font-size: 48px; margin-bottom: 12px; }
+.result-title {
+  font-family: var(--font-display);
+  font-size: 24px;
+  margin-bottom: 4px;
+}
+.result-card.success .result-title { color: var(--green); }
+.result-card.fail .result-title { color: var(--red); }
+.result-desc { font-size: 14px; color: var(--text-dim); }
+
+/* DETAIL ROWS */
+.detail-rows { margin: 16px 0; }
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--cream-dark);
+  font-size: 14px;
+}
+.detail-row:last-child { border-bottom: none; }
+.detail-key { color: var(--text-dim); }
+.detail-val { font-weight: 600; text-align: right; max-width: 60%; word-break: break-all; }
+
+/* SCANNER */
+#scanner-container {
+  border-radius: 12px;
+  overflow: hidden;
+  margin: 16px 0;
+  position: relative;
+}
+#scanner-container video {
+  border-radius: 12px;
+}
+
+/* COLLAPSIBLE */
+.collapsible-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px;
+  font-size: 13px;
+  color: var(--text-dim);
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  font-family: var(--font-body);
+}
+.collapsible-toggle:hover { color: var(--green); }
+.collapsible-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.collapsible-content.open { max-height: 500px; }
+
+/* LOADING */
+.spinner {
+  width: 40px; height: 40px;
+  border: 3px solid var(--cream-dark);
+  border-top-color: var(--green);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 20px auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  background: var(--green-dark);
+  color: var(--white);
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  z-index: 200;
+  transition: transform 0.3s;
+  white-space: nowrap;
+}
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* INFO BOX */
+.info-box {
+  background: var(--cream);
+  border-radius: 8px;
+  padding: 14px 16px;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--text-dim);
+  margin-top: 16px;
+}
+.info-box strong { color: var(--green); }
+
+/* RESPONSIVE */
+@media (max-width: 640px) {
+  .container { padding: 16px 12px 80px; }
+  .card { padding: 20px 16px; }
+  .nav-tab { padding: 8px 12px; font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">
+    <div class="nav-logo-icon">🌿</div>
+    <h1>Agro<span>Veri+</span></h1>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showPage('farmer')">Çiftçi</button>
+    <button class="nav-tab" onclick="showPage('consumer')">Tüketici</button>
+  </div>
+</nav>
+
+<!-- ====== FARMER PAGE ====== -->
+<div class="container">
+<div id="page-farmer" class="page active">
+
+  <!-- Steps -->
+  <div class="steps" id="farmer-steps">
+    <div class="step active" data-step="1">
+      <div class="step-num">1</div>
+      <div class="step-label">Yükle</div>
+    </div>
+    <div class="step" data-step="2">
+      <div class="step-num">2</div>
+      <div class="step-label">Mühürle</div>
+    </div>
+    <div class="step" data-step="3">
+      <div class="step-num">3</div>
+      <div class="step-label">QR Al</div>
+    </div>
+  </div>
+
+  <!-- Step 1: Upload -->
+  <div id="f-step1" class="card">
+    <div class="card-header">Organik Sertifika Yükle</div>
+    <div class="card-sub">Sertifika belgenizi yükleyin. Dijital mühür oluşturulacak ve QR kodu alacaksınız.</div>
+
+    <div class="upload-area" id="upload-area"
+         onclick="document.getElementById('file-input').click()"
+         ondragover="event.preventDefault(); this.classList.add('dragover')"
+         ondragleave="this.classList.remove('dragover')"
+         ondrop="event.preventDefault(); this.classList.remove('dragover'); handleFile(event.dataTransfer.files[0])">
+      <div class="upload-icon">📄</div>
+      <div class="upload-text">Sertifikanızı buraya sürükleyin</div>
+      <div class="upload-hint">PDF, JPG, PNG — Maks 10 MB</div>
+      <div class="upload-btns">
+        <button class="btn btn-outline btn-sm" onclick="event.stopPropagation(); document.getElementById('file-input').click()">
+          📁 Dosya Seç
+        </button>
+        <button class="btn btn-outline btn-sm" onclick="event.stopPropagation(); document.getElementById('camera-input').click()">
+          📷 Fotoğraf Çek
+        </button>
+      </div>
+    </div>
+    <input type="file" id="file-input" accept=".pdf,.jpg,.jpeg,.png,.docx,.doc,.txt" style="display:none" onchange="handleFile(this.files[0])">
+    <input type="file" id="camera-input" accept="image/*" capture="environment" style="display:none" onchange="handleFile(this.files[0])">
+  </div>
+
+  <!-- Step 2: Processing + Seal -->
+  <div id="f-step2" class="card" style="display:none">
+    <div class="card-header">Dijital Mühür Oluşturuluyor</div>
+    <div id="f-processing">
+      <div class="spinner"></div>
+      <p style="text-align:center; color:var(--text-dim); font-size:14px;">Belge hashleniyor...</p>
+    </div>
+    <div id="f-sealed" style="display:none">
+      <div class="file-info">
+        <div class="file-icon">📄</div>
+        <div>
+          <div class="file-name" id="sealed-filename"></div>
+          <div class="file-size" id="sealed-filesize"></div>
+        </div>
+      </div>
+      <div>
+        <div class="hash-label">SHA-256 DİJİTAL MÜHÜR</div>
+        <div class="hash-box">
+          <div class="hash-value" id="sealed-hash"></div>
+          <button class="hash-copy" onclick="copyHash()">📋</button>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="generateQR()" style="margin-top:16px">
+        🔐 QR Kod Oluştur
+      </button>
+    </div>
+  </div>
+
+  <!-- Step 3: QR Result -->
+  <div id="f-step3" class="card" style="display:none">
+    <div class="card-header">QR Kodunuz Hazır!</div>
+    <div class="card-sub">Bu QR kodu ürün ambalajına yapıştırın. Tüketiciler tarayarak sertifikanızı görebilir.</div>
+
+    <div class="qr-container">
+      <div id="qrcode-display"></div>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-primary btn-sm" onclick="downloadQR()">
+        ⬇ İndir
+      </button>
+      <button class="btn btn-amber btn-sm" onclick="shareWhatsApp()">
+        💬 Paylaş
+      </button>
+    </div>
+
+    <button class="collapsible-toggle" onclick="toggleTechDetail()">
+      🔧 Teknik Detaylar ▾
+    </button>
+    <div class="collapsible-content" id="tech-detail">
+      <div>
+        <div class="hash-label">SHA-256 HASH</div>
+        <div class="hash-box">
+          <div class="hash-value" id="qr-hash"></div>
+          <button class="hash-copy" onclick="copyHash()">📋</button>
+        </div>
+      </div>
+      <div style="margin-top:8px">
+        <div class="hash-label">DOĞRULAMA URL</div>
+        <div class="hash-box">
+          <div class="hash-value" id="qr-url" style="font-size:10px"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <strong>▸</strong> Belgenizin dijital mührü oluşturuldu.<br>
+      <strong>▸</strong> Bu mühür değiştirilemez — matematiksel güvencedir.<br>
+      <strong>▸</strong> Tüketici QR kodu taradığında belgenizin gerçekliğini doğrular.
+    </div>
+
+    <button class="btn btn-outline" style="width:100%; margin-top:16px" onclick="resetFarmer()">
+      ↺ Yeni Belge Yükle
+    </button>
+  </div>
+
+</div>
+
+<!-- ====== CONSUMER PAGE ====== -->
+<div id="page-consumer" class="page">
+
+  <!-- Scanner -->
+  <div id="c-scanner" class="card">
+    <div class="card-header">QR Kod Tara</div>
+    <div class="card-sub">Ürün üzerindeki AgroVeri+ QR kodunu kameraya gösterin.</div>
+
+    <div id="scanner-container"></div>
+
+    <button class="btn btn-primary" id="btn-start-scan" onclick="startScanner()">
+      📷 Kamerayı Aç
+    </button>
+    <button class="btn btn-outline" id="btn-stop-scan" style="display:none; width:100%; margin-top:8px" onclick="stopScanner()">
+      ✕ Kamerayı Kapat
+    </button>
+
+    <div style="text-align:center; margin-top:16px; color:var(--text-dim); font-size:13px;">
+      ─── veya ───
+    </div>
+
+    <div style="margin-top:12px">
+      <input type="text" id="manual-hash" placeholder="Hash kodunu yapıştırın..."
+             style="width:100%; padding:12px 16px; border:2px solid var(--cream-dark); border-radius:8px;
+                    font-family:var(--font-mono); font-size:13px; background:var(--white); color:var(--text);
+                    outline:none; transition:border-color 0.2s;"
+             onfocus="this.style.borderColor='var(--green)'"
+             onblur="this.style.borderColor='var(--cream-dark)'">
+      <button class="btn btn-outline btn-sm" style="width:100%; margin-top:8px" onclick="manualVerify()">
+        🔍 Doğrula
+      </button>
+    </div>
+  </div>
+
+  <!-- Verification Result -->
+  <div id="c-result" style="display:none">
+
+    <!-- SUCCESS -->
+    <div id="c-success" style="display:none">
+      <div class="result-card success">
+        <div class="result-icon">✅</div>
+        <div class="result-title">Doğrulandı</div>
+        <div class="result-desc">Bu organik sertifika gerçek ve değiştirilmemiştir.</div>
+      </div>
+
+      <div class="card">
+        <div style="font-size:12px; color:var(--text-dim); letter-spacing:1px; text-transform:uppercase; margin-bottom:12px; font-weight:600;">Ürün Bilgisi</div>
+        <div class="detail-rows" id="product-details"></div>
+      </div>
+
+      <div class="card">
+        <div style="font-size:12px; color:var(--text-dim); letter-spacing:1px; text-transform:uppercase; margin-bottom:12px; font-weight:600;">Güven Katmanı</div>
+        <div style="display:flex; align-items:center; gap:10px; padding:12px 0;">
+          <div style="font-size:24px;">🔒</div>
+          <div>
+            <div style="font-size:14px; font-weight:600; color:var(--green);">Dijital mühür sağlam</div>
+            <div style="font-size:12px; color:var(--text-dim);" id="seal-date"></div>
+          </div>
+        </div>
+
+        <button class="collapsible-toggle" onclick="toggleVerifyDetail()">
+          🔧 Teknik Detaylar ▾
+        </button>
+        <div class="collapsible-content" id="verify-detail">
+          <div class="hash-label">SHA-256 HASH</div>
+          <div class="hash-box">
+            <div class="hash-value" id="verify-hash"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAIL -->
+    <div id="c-fail" style="display:none">
+      <div class="result-card fail">
+        <div class="result-icon">⚠️</div>
+        <div class="result-title">Doğrulanamadı</div>
+        <div class="result-desc">Bu ürünün organik sertifikası sistemde bulunamadı. Satıcınızdan orijinal sertifikayı isteyin.</div>
+      </div>
+    </div>
+
+    <button class="btn btn-outline" style="width:100%; margin-top:16px" onclick="resetConsumer()">
+      ↺ Yeni QR Tara
+    </button>
+  </div>
+
+</div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ====== STATE ======
+let currentHash = '';
+let currentFile = null;
+let registeredHashes = {};
+let scanner = null;
+let scannerActive = false;
+
+// ====== NAVIGATION ======
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t => {
+    if ((page === 'farmer' && t.textContent === 'Çiftçi') ||
+        (page === 'consumer' && t.textContent === 'Tüketici')) {
+      t.classList.add('active');
+    }
+  });
+  if (page === 'consumer' && scannerActive) stopScanner();
+}
+
+// ====== FARMER FLOW ======
+function setStep(n) {
+  document.querySelectorAll('#farmer-steps .step').forEach(s => {
+    const sn = parseInt(s.dataset.step);
+    s.classList.remove('active', 'done');
+    if (sn < n) s.classList.add('done');
+    if (sn === n) s.classList.add('active');
+  });
+}
+
+async function handleFile(file) {
+  if (!file) return;
+  currentFile = file;
+
+  // Show step 2
+  document.getElementById('f-step1').style.display = 'none';
+  document.getElementById('f-step2').style.display = 'block';
+  document.getElementById('f-processing').style.display = 'block';
+  document.getElementById('f-sealed').style.display = 'none';
+  setStep(2);
+
+  // Read and hash
+  const buffer = await file.arrayBuffer();
+  const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  currentHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+  // Store
+  const now = new Date();
+  registeredHashes[currentHash] = {
+    filename: file.name,
+    size: file.size,
+    date: now.toISOString(),
+    dateDisplay: now.toLocaleDateString('tr-TR', { day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' })
+  };
+
+  // Show sealed
+  setTimeout(() => {
+    document.getElementById('f-processing').style.display = 'none';
+    document.getElementById('f-sealed').style.display = 'block';
+    document.getElementById('sealed-filename').textContent = file.name;
+    document.getElementById('sealed-filesize').textContent = (file.size / 1024).toFixed(1) + ' KB';
+    document.getElementById('sealed-hash').textContent = currentHash;
+  }, 1200);
+}
+
+function generateQR() {
+  document.getElementById('f-step2').style.display = 'none';
+  document.getElementById('f-step3').style.display = 'block';
+  setStep(3);
+
+  const verifyUrl = currentHash;
+  document.getElementById('qr-hash').textContent = currentHash;
+  document.getElementById('qr-url').textContent = 'agroveri.app/v/' + currentHash.substring(0, 16) + '...';
+
+  // Generate QR
+  const container = document.getElementById('qrcode-display');
+  container.innerHTML = '';
+  new QRCode(container, {
+    text: currentHash,
+    width: 180,
+    height: 180,
+    colorDark: '#1B4332',
+    colorLight: '#FFFFFF',
+    correctLevel: QRCode.CorrectLevel.M
+  });
+}
+
+function downloadQR() {
+  const canvas = document.querySelector('#qrcode-display canvas');
+  if (!canvas) return;
+  const link = document.createElement('a');
+  link.download = 'agroveri-qr-' + currentFile.name.split('.')[0] + '.png';
+  link.href = canvas.toDataURL();
+  link.click();
+  showToast('QR kod indirildi ✓');
+}
+
+function shareWhatsApp() {
+  const msg = encodeURIComponent(
+    '🌿 AgroVeri+ Organik Sertifika\n\n' +
+    '📄 ' + currentFile.name + '\n' +
+    '🔐 Hash: ' + currentHash.substring(0, 32) + '...\n\n' +
+    'Bu ürünün organik sertifikası dijital olarak mühürlenmiştir.'
+  );
+  window.open('https://wa.me/?text=' + msg, '_blank');
+}
+
+function copyHash() {
+  navigator.clipboard.writeText(currentHash).then(() => showToast('Hash kopyalandı ✓'));
+}
+
+function toggleTechDetail() {
+  document.getElementById('tech-detail').classList.toggle('open');
+}
+
+function resetFarmer() {
+  document.getElementById('f-step1').style.display = 'block';
+  document.getElementById('f-step2').style.display = 'none';
+  document.getElementById('f-step3').style.display = 'none';
+  document.getElementById('file-input').value = '';
+  document.getElementById('camera-input').value = '';
+  currentHash = '';
+  currentFile = null;
+  setStep(1);
+}
+
+// ====== CONSUMER FLOW ======
+function startScanner() {
+  const container = document.getElementById('scanner-container');
+  container.style.height = '300px';
+  document.getElementById('btn-start-scan').style.display = 'none';
+  document.getElementById('btn-stop-scan').style.display = 'block';
+
+  scanner = new Html5Qrcode('scanner-container');
+  scannerActive = true;
+  scanner.start(
+    { facingMode: 'environment' },
+    { fps: 10, qrbox: { width: 220, height: 220 } },
+    (decodedText) => {
+      stopScanner();
+      verifyHash(decodedText);
+    },
+    () => {}
+  ).catch(err => {
+    showToast('Kamera erişimi reddedildi');
+    stopScanner();
+  });
+}
+
+function stopScanner() {
+  if (scanner && scannerActive) {
+    scanner.stop().catch(() => {});
+    scannerActive = false;
+  }
+  document.getElementById('scanner-container').style.height = '0';
+  document.getElementById('scanner-container').innerHTML = '';
+  document.getElementById('btn-start-scan').style.display = 'block';
+  document.getElementById('btn-stop-scan').style.display = 'none';
+}
+
+function manualVerify() {
+  const hash = document.getElementById('manual-hash').value.trim();
+  if (!hash) return showToast('Hash kodu girin');
+  verifyHash(hash);
+}
+
+function verifyHash(hash) {
+  document.getElementById('c-scanner').style.display = 'none';
+  document.getElementById('c-result').style.display = 'block';
+
+  const record = registeredHashes[hash];
+  if (record) {
+    document.getElementById('c-success').style.display = 'block';
+    document.getElementById('c-fail').style.display = 'none';
+    document.getElementById('verify-hash').textContent = hash;
+    document.getElementById('seal-date').textContent = record.dateDisplay + ' tarihinde mühürlenmiştir.';
+
+    const details = document.getElementById('product-details');
+    details.innerHTML = [
+      ['Belge', record.filename],
+      ['Boyut', (record.size / 1024).toFixed(1) + ' KB'],
+      ['Mühür Tarihi', record.dateDisplay],
+      ['Hash Eşleşmesi', '✅ Belge orijinal'],
+    ].map(([k, v]) =>
+      `<div class="detail-row"><span class="detail-key">${k}</span><span class="detail-val" style="${k === 'Hash Eşleşmesi' ? 'color:var(--green);font-weight:700' : ''}">${v}</span></div>`
+    ).join('');
+  } else {
+    document.getElementById('c-success').style.display = 'none';
+    document.getElementById('c-fail').style.display = 'block';
+  }
+}
+
+function toggleVerifyDetail() {
+  document.getElementById('verify-detail').classList.toggle('open');
+}
+
+function resetConsumer() {
+  document.getElementById('c-scanner').style.display = 'block';
+  document.getElementById('c-result').style.display = 'none';
+  document.getElementById('c-success').style.display = 'none';
+  document.getElementById('c-fail').style.display = 'none';
+  document.getElementById('manual-hash').value = '';
+}
+
+// ====== TOAST ======
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+</script>
+
+</body>
+</html>
