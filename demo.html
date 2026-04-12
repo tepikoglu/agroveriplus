@@ -124,6 +124,7 @@ body{font-family:var(--sans);background:var(--off);color:var(--txt);min-height:1
     <span>AgroVeri<b>+</b></span>
   </a>
   <div class="nav-right">
+    <span id="mode-badge" style="font-family:var(--mono);font-size:10px;font-weight:600;padding:3px 10px;border-radius:6px;background:rgba(201,168,76,.15);color:#C9A84C">Demo Mode</span>
     <a href="index.html" class="nav-back">← Back to site</a>
     <div class="nav-tabs">
       <button class="nav-tab active" onclick="showPage('farmer')">Farmer</button>
@@ -215,6 +216,27 @@ body{font-family:var(--sans);background:var(--off);color:var(--txt);min-height:1
 
 <script>
 let hash='',file=null,db={},sc=null,scOn=false;
+let apiOnline=false;
+const API_BASE='/api/certificates';
+
+// Detect backend availability on load
+async function checkAPI(){
+  try{
+    const r=await fetch('/api/health',{signal:AbortSignal.timeout(3000)});
+    if(r.ok){apiOnline=true;updateModeBadge()}
+  }catch(e){apiOnline=false;updateModeBadge()}
+}
+
+function updateModeBadge(){
+  const el=document.getElementById('mode-badge');
+  if(apiOnline){
+    el.textContent='API Connected';
+    el.style.background='rgba(27,94,59,.15)';el.style.color='#1B5E3B';
+  }else{
+    el.textContent='Demo Mode';
+    el.style.background='rgba(201,168,76,.15)';el.style.color='#C9A84C';
+  }
+}
 
 function showPage(p){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
@@ -243,18 +265,39 @@ async function handleFile(f){
   document.getElementById('s2-loading').style.display='block';
   document.getElementById('s2-done').style.display='none';
   setStep(2);
+
+  // Client-side SHA-256 (instant feedback)
   const buf=await f.arrayBuffer();
   const hb=await crypto.subtle.digest('SHA-256',buf);
   hash=Array.from(new Uint8Array(hb)).map(b=>b.toString(16).padStart(2,'0')).join('');
   const now=new Date();
-  db[hash]={name:f.name,size:f.size,date:now.toISOString(),disp:now.toLocaleDateString('en-US',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'})};
-  setTimeout(()=>{
-    document.getElementById('s2-loading').style.display='none';
-    document.getElementById('s2-done').style.display='block';
-    document.getElementById('fn').textContent=f.name;
-    document.getElementById('fs').textContent=(f.size/1024).toFixed(1)+' KB';
-    document.getElementById('hv').textContent=hash;
-  },1200);
+  const disp=now.toLocaleDateString('en-US',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'});
+
+  // Always keep local fallback
+  db[hash]={name:f.name,size:f.size,date:now.toISOString(),disp:disp};
+
+  // Upload to backend if available
+  if(apiOnline){
+    try{
+      const fd=new FormData();
+      fd.append('file',f);
+      const res=await fetch(API_BASE+'/upload',{method:'POST',body:fd});
+      if(res.ok){
+        const data=await res.json();
+        hash=data.sha256_hash;
+        db[hash]={name:data.original_filename,size:data.file_size,date:data.created_at,disp:new Date(data.created_at).toLocaleDateString('en-US',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}),ipfs_cid:data.ipfs_cid,id:data.id};
+        if(data.ipfs_cid)toast('Pinned to IPFS: '+data.ipfs_cid.substring(0,12)+'...');
+      }
+    }catch(e){
+      console.warn('API upload failed, using local hash',e);
+    }
+  }
+
+  document.getElementById('s2-loading').style.display='none';
+  document.getElementById('s2-done').style.display='block';
+  document.getElementById('fn').textContent=f.name;
+  document.getElementById('fs').textContent=(f.size/1024).toFixed(1)+' KB';
+  document.getElementById('hv').textContent=hash;
 }
 
 function genQR(){
@@ -315,20 +358,61 @@ function manualV(){
   verify(h);
 }
 
-function verify(h){
+async function verify(h){
   document.getElementById('cs').style.display='none';
   document.getElementById('cr').style.display='block';
-  const r=db[h];
-  if(r){
+  document.getElementById('cr-ok').style.display='none';
+  document.getElementById('cr-fail').style.display='none';
+
+  let cert=null;
+
+  // Try backend first
+  if(apiOnline){
+    try{
+      const res=await fetch(API_BASE+'/verify',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({hash:h})
+      });
+      if(res.ok){
+        const data=await res.json();
+        if(data.verified && data.certificate){
+          const c=data.certificate;
+          cert={
+            name:c.original_filename,
+            size:c.file_size,
+            disp:new Date(c.created_at).toLocaleDateString('en-US',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}),
+            ipfs_cid:c.ipfs_cid,
+            certifier:c.certifier_name,
+            product:c.product_type
+          };
+        }
+      }
+    }catch(e){
+      console.warn('API verify failed, falling back to local',e);
+    }
+  }
+
+  // Fallback to local db
+  if(!cert && db[h]){
+    cert=db[h];
+  }
+
+  if(cert){
     document.getElementById('cr-ok').style.display='block';
-    document.getElementById('cr-fail').style.display='none';
     document.getElementById('vh').textContent=h;
-    document.getElementById('sd').textContent='Sealed on '+r.disp;
-    document.getElementById('det').innerHTML=[
-      ['Document',r.name],['Size',(r.size/1024).toFixed(1)+' KB'],['Sealed',r.disp],['Status','✅ Original — unaltered']
-    ].map(([k,v])=>'<div class="detail-row"><span class="detail-key">'+k+'</span><span class="detail-val"'+(k==='Status'?' style="color:var(--emerald);font-weight:700"':'')+'>'+v+'</span></div>').join('');
+    document.getElementById('sd').textContent='Sealed on '+cert.disp;
+    const rows=[
+      ['Document',cert.name],
+      ['Size',(cert.size/1024).toFixed(1)+' KB'],
+      ['Sealed',cert.disp],
+      ['Status','✅ Original — unaltered']
+    ];
+    if(cert.ipfs_cid)rows.splice(3,0,['IPFS CID',cert.ipfs_cid]);
+    if(cert.certifier)rows.splice(1,0,['Certifier',cert.certifier]);
+    if(cert.product)rows.splice(2,0,['Product',cert.product]);
+    document.getElementById('det').innerHTML=rows.map(([k,v])=>'<div class="detail-row"><span class="detail-key">'+k+'</span><span class="detail-val"'+(k==='Status'?' style="color:var(--emerald);font-weight:700"':'')+'>'+v+'</span></div>').join('');
   }else{
-    document.getElementById('cr-ok').style.display='none';
     document.getElementById('cr-fail').style.display='block';
   }
 }
@@ -342,6 +426,9 @@ function resetC(){
 }
 
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+
+// Init
+checkAPI();
 </script>
 </body>
 </html>
