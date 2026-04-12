@@ -13,6 +13,7 @@ class Certificate(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     farmer_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("farmers.id"))
+    parcel_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("parcels.id"), default=None)
     original_filename: Mapped[str] = mapped_column(String(500))
     file_size: Mapped[int] = mapped_column(Integer)
     content_type: Mapped[str] = mapped_column(String(100))
@@ -26,4 +27,5 @@ class Certificate(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     farmer: Mapped["Farmer | None"] = relationship(back_populates="certificates")  # noqa: F821
+    parcel: Mapped["Parcel | None"] = relationship(back_populates="certificates")  # noqa: F821
     verifications: Mapped[list["Verification"]] = relationship(back_populates="certificate")  # noqa: F821

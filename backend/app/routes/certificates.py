@@ -3,9 +3,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import settings
 from app.database import get_db
-from app.deps import get_current_user_optional
+from app.deps import get_current_user, get_current_user_optional
 from app.models.user import User
-from app.schemas import CertificateUploadResponse, VerifyRequest, VerifyResponse
+from app.schemas import (
+    CertificateDetail,
+    CertificateMetadataUpdate,
+    CertificateUploadResponse,
+    ExternalCheckResponse,
+    ExternalCheckResult,
+    VerifyRequest,
+    VerifyResponse,
+)
 from app.services.certificate_service import (
     compute_sha256,
     find_by_hash,
@@ -108,6 +116,79 @@ async def verify_certificate(
     return VerifyResponse(
         verified=False,
         message="Certificate not found. Request the original from your supplier.",
+    )
+
+
+@router.put("/{cert_id}/metadata", response_model=CertificateDetail)
+async def update_metadata(
+    cert_id: str,
+    body: CertificateMetadataUpdate,
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+):
+    """Add or update certificate metadata (certifier, product type, validity, parcel)."""
+    from uuid import UUID as _UUID
+    from sqlalchemy import select
+    from app.models.certificate import Certificate
+
+    result = await db.execute(select(Certificate).where(Certificate.id == _UUID(cert_id)))
+    cert = result.scalar_one_or_none()
+    if not cert:
+        raise HTTPException(404, "Certificate not found")
+
+    for field, value in body.model_dump(exclude_unset=True).items():
+        setattr(cert, field, value)
+    await db.commit()
+    await db.refresh(cert)
+    return CertificateDetail.model_validate(cert)
+
+
+@router.get("/{cert_id}/external-check", response_model=ExternalCheckResult)
+async def run_external_check(
+    cert_id: str,
+    db: AsyncSession = Depends(get_db),
+):
+    """Run verification against external registries (OTBIS, ECOCERT, ETKO)."""
+    from uuid import UUID as _UUID
+    from sqlalchemy import select
+    from app.models.certificate import Certificate
+    from app.models.external_check import ExternalCheck
+    from app.services.external_registry import run_all_checks
+
+    result = await db.execute(select(Certificate).where(Certificate.id == _UUID(cert_id)))
+    cert = result.scalar_one_or_none()
+    if not cert:
+        raise HTTPException(404, "Certificate not found")
+
+    results = await run_all_checks(cert.certificate_number, cert.certifier_name)
+
+    checks = []
+    for r in results:
+        ec = ExternalCheck(
+            certificate_id=cert.id,
+            provider=r.provider,
+            status=r.status,
+            details=r.details,
+        )
+        db.add(ec)
+        checks.append(ec)
+    await db.commit()
+    for ec in checks:
+        await db.refresh(ec)
+
+    valid_count = sum(1 for r in results if r.status == "valid")
+    total = len(results)
+    if valid_count == total:
+        summary = f"All {total} registries confirmed this certificate."
+    elif valid_count > 0:
+        summary = f"{valid_count}/{total} registries confirmed. Some could not verify."
+    else:
+        summary = "No external registry could verify this certificate."
+
+    return ExternalCheckResult(
+        certificate_id=cert.id,
+        checks=[ExternalCheckResponse.model_validate(ec) for ec in checks],
+        summary=summary,
     )
 
 

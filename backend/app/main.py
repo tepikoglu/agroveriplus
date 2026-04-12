@@ -7,7 +7,9 @@ from app.config import settings
 from app.database import engine, Base
 from app.routes.auth import router as auth_router
 from app.routes.certificates import router as certificates_router
+from app.routes.dashboard import router as dashboard_router
 from app.routes.health import router as health_router
+from app.routes.parcels import router as parcels_router
 
 
 @asynccontextmanager
@@ -37,3 +39,5 @@ app.add_middleware(
 app.include_router(health_router)
 app.include_router(auth_router, prefix="/api/auth", tags=["auth"])
 app.include_router(certificates_router, prefix="/api/certificates", tags=["certificates"])
+app.include_router(parcels_router, prefix="/api/parcels", tags=["parcels"])
+app.include_router(dashboard_router, prefix="/api/dashboard", tags=["dashboard"])
