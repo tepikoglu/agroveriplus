@@ -27,6 +27,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--off);color:var(--txt);ove
 .nav-links a:hover{color:var(--gold)}
 .btn-demo{font-size:13px;font-weight:600;color:var(--forest);background:var(--gold);padding:8px 20px;border-radius:8px;text-decoration:none;transition:background .2s}
 .btn-demo:hover{background:var(--goldL)}
+.lang-sw{display:flex;gap:2px;margin-right:8px}
+.lang-btn{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;padding:4px 10px;border-radius:6px;border:none;cursor:pointer;background:transparent;color:rgba(255,255,255,.4);transition:all .2s}
+.lang-btn.active{background:rgba(255,255,255,.12);color:var(--gold)}
+.lang-btn:hover:not(.active){color:#fff}
 
 /* HERO — full viewport on mobile */
 .hero{background:linear-gradient(170deg,var(--forest),var(--deep) 50%,#0F3322);padding:clamp(120px,18vh,160px) clamp(20px,4vw,40px) clamp(60px,10vh,100px);position:relative;overflow:hidden;min-height:100svh;display:flex;align-items:center}
@@ -177,20 +181,21 @@ footer{background:#070F0B;padding:50px clamp(20px,4vw,40px) 36px}
     <span>AgroVeri<b>+</b></span>
   </div>
   <div class="nav-links">
-    <a href="#problem">Problem</a><a href="#solution">Solution</a><a href="#defense">Defense</a><a href="#roadmap">Roadmap</a><a href="#faq">FAQ</a><a href="#contact">Contact</a>
-    <a href="demo.html" class="btn-demo">Demo</a>
+    <a href="#problem" data-i18n="nav.problem">Problem</a><a href="#solution" data-i18n="nav.solution">Solution</a><a href="#defense" data-i18n="nav.defense">Defense</a><a href="#roadmap" data-i18n="nav.roadmap">Roadmap</a><a href="#faq" data-i18n="nav.faq">FAQ</a><a href="#contact" data-i18n="nav.contact">Contact</a>
+    <div class="lang-sw"><button class="lang-btn active" data-lang="en" onclick="setLang('en')">EN</button><button class="lang-btn" data-lang="tr" onclick="setLang('tr')">TR</button></div>
+    <a href="demo.html" class="btn-demo" data-i18n="nav.demo">Demo</a>
   </div>
 </nav>
 
 <section class="hero" id="hero">
   <div class="hero-glow"></div>
   <div class="hero-inner">
-    <div class="fi"><span class="tag tag-light">Digital Traceability for Organic Agriculture</span></div>
-    <div class="fi" style="transition-delay:.15s"><h1>Every Certificate. <em>Verified.</em><br>Immutable.</h1></div>
-    <div class="fi" style="transition-delay:.3s"><p>AgroVeri+ secures organic supply chains with IPFS-backed document integrity, cross-database verification, and satellite-powered volume validation.</p></div>
+    <div class="fi"><span class="tag tag-light" data-i18n="hero.tag">Digital Traceability for Organic Agriculture</span></div>
+    <div class="fi" style="transition-delay:.15s"><h1 data-i18n="hero.h1">Every Certificate. <em>Verified.</em><br>Immutable.</h1></div>
+    <div class="fi" style="transition-delay:.3s"><p data-i18n="hero.p">AgroVeri+ secures organic supply chains with IPFS-backed document integrity, cross-database verification, and satellite-powered volume validation.</p></div>
     <div class="fi hero-btns" style="transition-delay:.45s">
-      <a href="demo.html" class="btn-gold">Demo →</a>
-      <a href="#problem" class="btn-ghost">See the Problem</a>
+      <a href="demo.html" class="btn-gold" data-i18n="hero.btn1">Demo →</a>
+      <a href="#problem" class="btn-ghost" data-i18n="hero.btn2">See the Problem</a>
     </div>
     <div class="fi hash-preview" style="transition-delay:.6s">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
@@ -201,102 +206,102 @@ footer{background:#070F0B;padding:50px clamp(20px,4vw,40px) 36px}
 </section>
 
 <section class="stats"><div class="stats-inner">
-  <div class="stat"><div class="stat-num" data-count="90000">0</div><div class="stat-label">tonnes flagged suspicious</div></div>
-  <div class="stat"><div class="stat-num" data-count="12" data-suffix="B€">0</div><div class="stat-label">annual fraud damage in EU</div></div>
-  <div class="stat"><div class="stat-num" data-count="500" data-suffix="%">0</div><div class="stat-label">fraud growth in organics</div></div>
-  <div class="stat"><div class="stat-num" data-count="62" data-suffix="+">0</div><div class="stat-label">ePhyto countries</div></div>
+  <div class="stat"><div class="stat-num" data-count="90000">0</div><div class="stat-label" data-i18n="stat.1">tonnes flagged suspicious</div></div>
+  <div class="stat"><div class="stat-num" data-count="12" data-suffix="B€">0</div><div class="stat-label" data-i18n="stat.2">annual fraud damage in EU</div></div>
+  <div class="stat"><div class="stat-num" data-count="500" data-suffix="%">0</div><div class="stat-label" data-i18n="stat.3">fraud growth in organics</div></div>
+  <div class="stat"><div class="stat-num" data-count="62" data-suffix="+">0</div><div class="stat-label" data-i18n="stat.4">ePhyto countries</div></div>
 </div></section>
 
 <section class="sec" id="problem"><div class="sec-inner">
-  <div class="fi"><span class="tag tag-dark">The Problem</span></div>
-  <div class="fi"><h2>Organic fraud is a <em style="color:var(--red)">billion-euro</em> industry</h2></div>
-  <div class="fi"><p style="font-size:16px;line-height:1.65;color:var(--txtL);max-width:580px;margin-bottom:44px">Fake documents, shell certifiers, and transit-country laundering cost legitimate farmers billions.</p></div>
+  <div class="fi"><span class="tag tag-dark" data-i18n="problem.tag">The Problem</span></div>
+  <div class="fi"><h2 data-i18n="problem.h2">Organic fraud is a <em style="color:var(--red)">billion-euro</em> industry</h2></div>
+  <div class="fi"><p style="font-size:16px;line-height:1.65;color:var(--txtL);max-width:580px;margin-bottom:44px" data-i18n="problem.p">Fake documents, shell certifiers, and transit-country laundering cost legitimate farmers billions.</p></div>
   <div class="g3">
-    <div class="fi case-card"><div class="case-head"><span class="case-tag">CASE 01</span><span style="font-size:26px">🫐</span></div><h4>Chilean Raspberry Scheme</h4><p>$12M organic raspberries from China re-documented as Chilean.</p><div class="case-meta"><span class="amt">$12M seized</span><span class="loc">Chile–Canada</span></div></div>
-    <div class="fi case-card" style="transition-delay:.15s"><div class="case-head"><span class="case-tag">CASE 02</span><span style="font-size:26px">🥜</span></div><h4>The Pistachio Cartel</h4><p>Spanish OCG sold conventional pistachios at 80% premium with forged certifications.</p><div class="case-meta"><span class="amt">€6M+</span><span class="loc">Spain–France</span></div></div>
-    <div class="fi case-card" style="transition-delay:.3s"><div class="case-head"><span class="case-tag">CASE 03</span><span style="font-size:26px">🍎</span></div><h4>Rotten Apple Network</h4><p>Mycotoxin-contaminated apples rebranded as organic European products.</p><div class="case-meta"><span class="amt">1,411t seized</span><span class="loc">Italy–Serbia</span></div></div>
+    <div class="fi case-card"><div class="case-head"><span class="case-tag">CASE 01</span><span style="font-size:26px">🫐</span></div><h4 data-i18n="case1.title">Chilean Raspberry Scheme</h4><p data-i18n="case1.p">$12M organic raspberries from China re-documented as Chilean.</p><div class="case-meta"><span class="amt">$12M seized</span><span class="loc">Chile–Canada</span></div></div>
+    <div class="fi case-card" style="transition-delay:.15s"><div class="case-head"><span class="case-tag">CASE 02</span><span style="font-size:26px">🥜</span></div><h4 data-i18n="case2.title">The Pistachio Cartel</h4><p data-i18n="case2.p">Spanish OCG sold conventional pistachios at 80% premium with forged certifications.</p><div class="case-meta"><span class="amt">€6M+</span><span class="loc">Spain–France</span></div></div>
+    <div class="fi case-card" style="transition-delay:.3s"><div class="case-head"><span class="case-tag">CASE 03</span><span style="font-size:26px">🍎</span></div><h4 data-i18n="case3.title">Rotten Apple Network</h4><p data-i18n="case3.p">Mycotoxin-contaminated apples rebranded as organic European products.</p><div class="case-meta"><span class="amt">1,411t seized</span><span class="loc">Italy–Serbia</span></div></div>
   </div>
 </div></section>
 
 <section class="sec sec-dark" id="solution"><div class="sec-inner">
-  <div class="fi"><span class="tag tag-light">Our Solution</span></div>
-  <div class="fi"><h2 style="color:#fff">Three pillars of <em style="color:var(--gold)">trust</em></h2></div>
+  <div class="fi"><span class="tag tag-light" data-i18n="solution.tag">Our Solution</span></div>
+  <div class="fi"><h2 style="color:#fff" data-i18n="solution.h2">Three pillars of <em style="color:var(--gold)">trust</em></h2></div>
   <div class="g3" style="margin-top:20px">
-    <div class="fi pillar"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><span class="phase">Phase 1 — Live</span><h3>Document Integrity</h3><p>IPFS hashing locks every certificate. One pixel change = new hash.</p><div class="pillar-tags"><span>IPFS</span><span>SHA-256</span></div></div>
-    <div class="fi pillar" style="transition-delay:.15s"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg><span class="phase">Phase 2</span><h3>Source Verification</h3><p>Cross-reference against OTBIS, ECOCERT, and ePhyto Hub.</p><div class="pillar-tags"><span>OTBIS</span><span>TRACES-NT</span></div></div>
-    <div class="fi pillar" style="transition-delay:.3s"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 010 8.49m-8.48-.01a6 6 0 010-8.49m11.31-2.82a10 10 0 010 14.14m-14.14 0a10 10 0 010-14.14"/></svg><span class="phase">Phase 2–3</span><h3>Volume Validation</h3><p>Satellite imagery calculates real production capacity.</p><div class="pillar-tags"><span>Sentinel-2</span><span>NDVI</span></div></div>
+    <div class="fi pillar"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><span class="phase">Phase 1 — Live</span><h3 data-i18n="pillar1.title">Document Integrity</h3><p data-i18n="pillar1.p">IPFS hashing locks every certificate. One pixel change = new hash.</p><div class="pillar-tags"><span>IPFS</span><span>SHA-256</span></div></div>
+    <div class="fi pillar" style="transition-delay:.15s"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg><span class="phase">Phase 2</span><h3 data-i18n="pillar2.title">Source Verification</h3><p data-i18n="pillar2.p">Cross-reference against OTBIS, ECOCERT, and ePhyto Hub.</p><div class="pillar-tags"><span>OTBIS</span><span>TRACES-NT</span></div></div>
+    <div class="fi pillar" style="transition-delay:.3s"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 010 8.49m-8.48-.01a6 6 0 010-8.49m11.31-2.82a10 10 0 010 14.14m-14.14 0a10 10 0 010-14.14"/></svg><span class="phase">Phase 2–3</span><h3 data-i18n="pillar3.title">Volume Validation</h3><p data-i18n="pillar3.p">Satellite imagery calculates real production capacity.</p><div class="pillar-tags"><span>Sentinel-2</span><span>NDVI</span></div></div>
   </div>
 </div></section>
 
 <section class="sec" id="defense"><div class="sec-inner">
-  <div class="fi"><span class="tag tag-dark">Fraud vs. Defense</span></div>
-  <div class="fi"><h2>Five threats. <em style="color:var(--emerald)">Five defenses.</em></h2></div>
-  <div class="fi"><p style="font-size:16px;line-height:1.65;color:var(--txtL);max-width:540px;margin-bottom:44px">We studied real fraud methods — then built countermeasures.</p></div>
-  <div class="fi threat-row"><div class="threat-side threat-l"><div class="threat-badge red">⚠ THREAT 1/5</div><h5>Transit Laundering</h5><p>Product travels Iran→UAE→EU with fabricated paperwork.</p></div><div class="threat-arrow"><div>→</div></div><div class="threat-side threat-r"><div class="threat-badge green">🛡 DEFENSE</div><p>Origin inconsistency flags impossible commodity origins.</p></div></div>
-  <div class="fi threat-row"><div class="threat-side threat-l"><div class="threat-badge red">⚠ THREAT 2/5</div><h5>Forged Certificates</h5><p>Photoshop certificates and shell certification bodies.</p></div><div class="threat-arrow"><div>→</div></div><div class="threat-side threat-r"><div class="threat-badge green">🛡 DEFENSE</div><p>IPFS hash + ECOCERT/IMO/ETKO registry cross-reference.</p></div></div>
-  <div class="fi threat-row"><div class="threat-side threat-l"><div class="threat-badge red">⚠ THREAT 3/5</div><h5>Ghost Production</h5><p>5ha farm declares 500 tonnes via fake records.</p></div><div class="threat-arrow"><div>→</div></div><div class="threat-side threat-r"><div class="threat-badge green">🛡 DEFENSE</div><p>Satellite parcel analysis calculates max capacity.</p></div></div>
-  <div class="fi threat-row"><div class="threat-side threat-l"><div class="threat-badge red">⚠ THREAT 4/5</div><h5>Paper Phytosanitary</h5><p>Paper certificates trivially forged at customs.</p></div><div class="threat-arrow"><div>→</div></div><div class="threat-side threat-r"><div class="threat-badge green">🛡 DEFENSE</div><p>ePhyto Hub + TRACES-NT real-time verification.</p></div></div>
-  <div class="fi threat-row"><div class="threat-side threat-l"><div class="threat-badge red">⚠ THREAT 5/5</div><h5>Crime Networks</h5><p>OCGs control certifiers, importers, entry points.</p></div><div class="threat-arrow"><div>→</div></div><div class="threat-side threat-r"><div class="threat-badge green">🛡 DEFENSE</div><p>Multi-point cross-checks impossible to circumvent.</p></div></div>
+  <div class="fi"><span class="tag tag-dark" data-i18n="defense.tag">Fraud vs. Defense</span></div>
+  <div class="fi"><h2 data-i18n="defense.h2">Five threats. <em style="color:var(--emerald)">Five defenses.</em></h2></div>
+  <div class="fi"><p style="font-size:16px;line-height:1.65;color:var(--txtL);max-width:540px;margin-bottom:44px" data-i18n="defense.p">We studied real fraud methods — then built countermeasures.</p></div>
+  <div class="fi threat-row"><div class="threat-side threat-l"><div class="threat-badge red">⚠ THREAT 1/5</div><h5 data-i18n="t1.title">Transit Laundering</h5><p data-i18n="t1.p">Product travels Iran→UAE→EU with fabricated paperwork.</p></div><div class="threat-arrow"><div>→</div></div><div class="threat-side threat-r"><div class="threat-badge green">🛡 DEFENSE</div><p data-i18n="d1.p">Origin inconsistency flags impossible commodity origins.</p></div></div>
+  <div class="fi threat-row"><div class="threat-side threat-l"><div class="threat-badge red">⚠ THREAT 2/5</div><h5 data-i18n="t2.title">Forged Certificates</h5><p data-i18n="t2.p">Photoshop certificates and shell certification bodies.</p></div><div class="threat-arrow"><div>→</div></div><div class="threat-side threat-r"><div class="threat-badge green">🛡 DEFENSE</div><p data-i18n="d2.p">IPFS hash + ECOCERT/IMO/ETKO registry cross-reference.</p></div></div>
+  <div class="fi threat-row"><div class="threat-side threat-l"><div class="threat-badge red">⚠ THREAT 3/5</div><h5 data-i18n="t3.title">Ghost Production</h5><p data-i18n="t3.p">5ha farm declares 500 tonnes via fake records.</p></div><div class="threat-arrow"><div>→</div></div><div class="threat-side threat-r"><div class="threat-badge green">🛡 DEFENSE</div><p data-i18n="d3.p">Satellite parcel analysis calculates max capacity.</p></div></div>
+  <div class="fi threat-row"><div class="threat-side threat-l"><div class="threat-badge red">⚠ THREAT 4/5</div><h5 data-i18n="t4.title">Paper Phytosanitary</h5><p data-i18n="t4.p">Paper certificates trivially forged at customs.</p></div><div class="threat-arrow"><div>→</div></div><div class="threat-side threat-r"><div class="threat-badge green">🛡 DEFENSE</div><p data-i18n="d4.p">ePhyto Hub + TRACES-NT real-time verification.</p></div></div>
+  <div class="fi threat-row"><div class="threat-side threat-l"><div class="threat-badge red">⚠ THREAT 5/5</div><h5 data-i18n="t5.title">Crime Networks</h5><p data-i18n="t5.p">OCGs control certifiers, importers, entry points.</p></div><div class="threat-arrow"><div>→</div></div><div class="threat-side threat-r"><div class="threat-badge green">🛡 DEFENSE</div><p data-i18n="d5.p">Multi-point cross-checks impossible to circumvent.</p></div></div>
 </div></section>
 
 <section class="sec sec-cream"><div class="sec-inner sec-center">
-  <div class="fi"><span class="tag tag-dark">Architecture</span></div>
-  <div class="fi"><h2>Four layers of defense</h2></div>
+  <div class="fi"><span class="tag tag-dark" data-i18n="arch.tag">Architecture</span></div>
+  <div class="fi"><h2 data-i18n="arch.h2">Four layers of defense</h2></div>
 </div><div class="sec-inner" style="margin-top:40px"><div class="g2">
-  <div class="fi layer active"><div class="layer-head"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1B5E3B" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><div><div class="layer-phase">Phase 1 — Live</div><div class="layer-title">Document Integrity</div></div></div><div class="layer-items"><div>✓ IPFS hash — immutable fingerprint</div><div>✓ Timestamp + uploader identity</div><div>✓ Verified unaltered since upload</div></div></div>
-  <div class="fi layer" style="transition-delay:.1s"><div class="layer-head"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg><div><div class="layer-phase">Phase 2</div><div class="layer-title">Source Verification</div></div></div><div class="layer-items"><div>○ ECOCERT/IMO/ETKO registry</div><div>○ OTBIS database match</div><div>○ ePhyto Hub + TRACES-NT</div></div></div>
-  <div class="fi layer" style="transition-delay:.2s"><div class="layer-head"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 010 8.49m-8.48-.01a6 6 0 010-8.49"/></svg><div><div class="layer-phase">Phase 2–3</div><div class="layer-title">Quantity Validation</div></div></div><div class="layer-items"><div>○ Satellite max production</div><div>○ Volume vs. possibility</div><div>○ Anomaly detection</div></div></div>
-  <div class="fi layer" style="transition-delay:.3s"><div class="layer-head"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg><div><div class="layer-phase">Phase 3</div><div class="layer-title">AI Analysis</div></div></div><div class="layer-items"><div>○ Format validation</div><div>○ Cross-reference consistency</div><div>○ Duplicate detection</div></div></div>
+  <div class="fi layer active"><div class="layer-head"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1B5E3B" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><div><div class="layer-phase">Phase 1 — Live</div><div class="layer-title" data-i18n="layer1.title">Document Integrity</div></div></div><div class="layer-items"><div data-i18n="layer1.i1">✓ IPFS hash — immutable fingerprint</div><div data-i18n="layer1.i2">✓ Timestamp + uploader identity</div><div data-i18n="layer1.i3">✓ Verified unaltered since upload</div></div></div>
+  <div class="fi layer" style="transition-delay:.1s"><div class="layer-head"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg><div><div class="layer-phase">Phase 2</div><div class="layer-title" data-i18n="layer2.title">Source Verification</div></div></div><div class="layer-items"><div data-i18n="layer2.i1">○ ECOCERT/IMO/ETKO registry</div><div data-i18n="layer2.i2">○ OTBIS database match</div><div data-i18n="layer2.i3">○ ePhyto Hub + TRACES-NT</div></div></div>
+  <div class="fi layer" style="transition-delay:.2s"><div class="layer-head"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 010 8.49m-8.48-.01a6 6 0 010-8.49"/></svg><div><div class="layer-phase">Phase 2–3</div><div class="layer-title" data-i18n="layer3.title">Quantity Validation</div></div></div><div class="layer-items"><div data-i18n="layer3.i1">○ Satellite max production</div><div data-i18n="layer3.i2">○ Volume vs. possibility</div><div data-i18n="layer3.i3">○ Anomaly detection</div></div></div>
+  <div class="fi layer" style="transition-delay:.3s"><div class="layer-head"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg><div><div class="layer-phase">Phase 3</div><div class="layer-title" data-i18n="layer4.title">AI Analysis</div></div></div><div class="layer-items"><div data-i18n="layer4.i1">○ Format validation</div><div data-i18n="layer4.i2">○ Cross-reference consistency</div><div data-i18n="layer4.i3">○ Duplicate detection</div></div></div>
 </div></div></section>
 
 <section class="sec sec-white"><div class="sec-inner sec-center">
-  <div class="fi"><span class="tag tag-dark">How It Works</span></div>
-  <div class="fi"><h2>Three steps to <em style="color:var(--emerald)">trust</em></h2></div>
+  <div class="fi"><span class="tag tag-dark" data-i18n="how.tag">How It Works</span></div>
+  <div class="fi"><h2 data-i18n="how.h2">Three steps to <em style="color:var(--emerald)">trust</em></h2></div>
   <div class="g3" style="margin-top:40px">
-    <div class="fi" style="text-align:center"><div class="step-circle">01</div><h3 style="font-family:'Instrument Serif',serif;font-size:22px;font-weight:400;margin-bottom:10px">Upload</h3><p style="font-size:14px;color:var(--txtL);line-height:1.65">Upload organic or phytosanitary certificate.</p></div>
-    <div class="fi" style="text-align:center;transition-delay:.15s"><div class="step-circle">02</div><h3 style="font-family:'Instrument Serif',serif;font-size:22px;font-weight:400;margin-bottom:10px">Hash &amp; Seal</h3><p style="font-size:14px;color:var(--txtL);line-height:1.65">IPFS hash with identity, GPS, timestamp.</p></div>
-    <div class="fi" style="text-align:center;transition-delay:.3s"><div class="step-circle">03</div><h3 style="font-family:'Instrument Serif',serif;font-size:22px;font-weight:400;margin-bottom:10px">Verify</h3><p style="font-size:14px;color:var(--txtL);line-height:1.65">Cross-check OTBIS, ePhyto, satellite data.</p></div>
+    <div class="fi" style="text-align:center"><div class="step-circle">01</div><h3 style="font-family:'Instrument Serif',serif;font-size:22px;font-weight:400;margin-bottom:10px" data-i18n="step1.title">Upload</h3><p style="font-size:14px;color:var(--txtL);line-height:1.65" data-i18n="step1.p">Upload organic or phytosanitary certificate.</p></div>
+    <div class="fi" style="text-align:center;transition-delay:.15s"><div class="step-circle">02</div><h3 style="font-family:'Instrument Serif',serif;font-size:22px;font-weight:400;margin-bottom:10px" data-i18n="step2.title">Hash &amp; Seal</h3><p style="font-size:14px;color:var(--txtL);line-height:1.65" data-i18n="step2.p">IPFS hash with identity, GPS, timestamp.</p></div>
+    <div class="fi" style="text-align:center;transition-delay:.3s"><div class="step-circle">03</div><h3 style="font-family:'Instrument Serif',serif;font-size:22px;font-weight:400;margin-bottom:10px" data-i18n="step3.title">Verify</h3><p style="font-size:14px;color:var(--txtL);line-height:1.65" data-i18n="step3.p">Cross-check OTBIS, ePhyto, satellite data.</p></div>
   </div>
 </div></section>
 
 <section class="sec"><div class="sec-inner">
-  <div class="fi"><span class="tag tag-dark">Built For</span></div>
-  <div class="fi"><h2>Who uses AgroVeri+?</h2></div>
+  <div class="fi"><span class="tag tag-dark" data-i18n="for.tag">Built For</span></div>
+  <div class="fi"><h2 data-i18n="for.h2">Who uses AgroVeri+?</h2></div>
   <div class="g4" style="margin-top:40px">
-    <div class="fi persona"><span style="font-size:34px">🌾</span><h4>Cooperatives</h4><p>Verify member certifications from one dashboard.</p></div>
-    <div class="fi persona" style="transition-delay:.1s"><span style="font-size:34px">✅</span><h4>Certifiers</h4><p>Upload directly to an immutable system.</p></div>
-    <div class="fi persona" style="transition-delay:.2s"><span style="font-size:34px">🚢</span><h4>Importers</h4><p>EUDR-ready farm-to-port traceability.</p></div>
-    <div class="fi persona" style="transition-delay:.3s"><span style="font-size:34px">🏛️</span><h4>Regulators</h4><p>Real-time monitoring and volume checks.</p></div>
+    <div class="fi persona"><span style="font-size:34px">🌾</span><h4 data-i18n="persona1.title">Cooperatives</h4><p data-i18n="persona1.p">Verify member certifications from one dashboard.</p></div>
+    <div class="fi persona" style="transition-delay:.1s"><span style="font-size:34px">✅</span><h4 data-i18n="persona2.title">Certifiers</h4><p data-i18n="persona2.p">Upload directly to an immutable system.</p></div>
+    <div class="fi persona" style="transition-delay:.2s"><span style="font-size:34px">🚢</span><h4 data-i18n="persona3.title">Importers</h4><p data-i18n="persona3.p">EUDR-ready farm-to-port traceability.</p></div>
+    <div class="fi persona" style="transition-delay:.3s"><span style="font-size:34px">🏛️</span><h4 data-i18n="persona4.title">Regulators</h4><p data-i18n="persona4.p">Real-time monitoring and volume checks.</p></div>
   </div>
 </div></section>
 
 <section class="sec sec-dark" id="roadmap"><div class="sec-inner">
-  <div class="fi"><span class="tag tag-light">Roadmap</span></div>
-  <div class="fi"><h2 style="color:#fff">Building trust, <em style="color:var(--gold)">phase by phase</em></h2></div>
+  <div class="fi"><span class="tag tag-light" data-i18n="rm.tag">Roadmap</span></div>
+  <div class="fi"><h2 style="color:#fff" data-i18n="rm.h2">Building trust, <em style="color:var(--gold)">phase by phase</em></h2></div>
   <div class="g3" style="margin-top:50px">
-    <div class="fi rm-card live"><div class="rm-head"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.1em;color:var(--emerald)">LIVE</span><span style="font-size:11px;color:rgba(255,255,255,.35)">Now</span></div><div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px">Phase 1</div><div style="font-family:'Instrument Serif',serif;font-size:22px;color:#fff;margin-bottom:18px">Document Integrity</div><div class="rm-items" style="color:rgba(255,255,255,.8)"><div>✓ IPFS immutability</div><div>✓ Timestamp &amp; identity</div><div>✓ QR code per product</div><div>✓ Certificate viewer</div></div></div>
-    <div class="fi rm-card" style="transition-delay:.15s"><div class="rm-head"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.1em;color:var(--gold)">BUILDING</span><span style="font-size:11px;color:rgba(255,255,255,.35)">Q3 2026</span></div><div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px">Phase 2</div><div style="font-family:'Instrument Serif',serif;font-size:22px;color:#fff;margin-bottom:18px">Source Verification</div><div class="rm-items" style="color:rgba(255,255,255,.45)"><div>○ OTBIS API</div><div>○ Certifier cross-check</div><div>○ ePhyto Hub</div><div>○ EUDR DDS prep</div></div></div>
-    <div class="fi rm-card" style="transition-delay:.3s"><div class="rm-head"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.1em;color:rgba(255,255,255,.4)">PLANNED</span><span style="font-size:11px;color:rgba(255,255,255,.35)">2027</span></div><div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px">Phase 3</div><div style="font-family:'Instrument Serif',serif;font-size:22px;color:#fff;margin-bottom:18px">AI &amp; Satellite</div><div class="rm-items" style="color:rgba(255,255,255,.45)"><div>○ AI format analysis</div><div>○ Satellite validation</div><div>○ Anomaly detection</div><div>○ Risk scoring</div></div></div>
+    <div class="fi rm-card live"><div class="rm-head"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.1em;color:var(--emerald)">LIVE</span><span style="font-size:11px;color:rgba(255,255,255,.35)">Now</span></div><div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px">Phase 1</div><div style="font-family:'Instrument Serif',serif;font-size:22px;color:#fff;margin-bottom:18px" data-i18n="rm1.title">Document Integrity</div><div class="rm-items" style="color:rgba(255,255,255,.8)"><div data-i18n="rm1.i1">✓ IPFS immutability</div><div data-i18n="rm1.i2">✓ Timestamp &amp; identity</div><div data-i18n="rm1.i3">✓ QR code per product</div><div data-i18n="rm1.i4">✓ Certificate viewer</div></div></div>
+    <div class="fi rm-card" style="transition-delay:.15s"><div class="rm-head"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.1em;color:var(--gold)">BUILDING</span><span style="font-size:11px;color:rgba(255,255,255,.35)">Q3 2026</span></div><div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px">Phase 2</div><div style="font-family:'Instrument Serif',serif;font-size:22px;color:#fff;margin-bottom:18px" data-i18n="rm2.title">Source Verification</div><div class="rm-items" style="color:rgba(255,255,255,.45)"><div data-i18n="rm2.i1">○ OTBIS API</div><div data-i18n="rm2.i2">○ Certifier cross-check</div><div data-i18n="rm2.i3">○ ePhyto Hub</div><div data-i18n="rm2.i4">○ EUDR DDS prep</div></div></div>
+    <div class="fi rm-card" style="transition-delay:.3s"><div class="rm-head"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.1em;color:rgba(255,255,255,.4)">PLANNED</span><span style="font-size:11px;color:rgba(255,255,255,.35)">2027</span></div><div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px">Phase 3</div><div style="font-family:'Instrument Serif',serif;font-size:22px;color:#fff;margin-bottom:18px" data-i18n="rm3.title">AI &amp; Satellite</div><div class="rm-items" style="color:rgba(255,255,255,.45)"><div data-i18n="rm3.i1">○ AI format analysis</div><div data-i18n="rm3.i2">○ Satellite validation</div><div data-i18n="rm3.i3">○ Anomaly detection</div><div data-i18n="rm3.i4">○ Risk scoring</div></div></div>
   </div>
 </div></section>
 
 <section class="sec" id="faq" style="max-width:780px;margin:0 auto">
-  <div class="fi"><span class="tag tag-dark">FAQ</span></div>
-  <div class="fi"><h2>Tough questions, <em style="color:var(--emerald)">honest answers</em></h2></div>
+  <div class="fi"><span class="tag tag-dark" data-i18n="faq.tag">FAQ</span></div>
+  <div class="fi"><h2 data-i18n="faq.h2">Tough questions, <em style="color:var(--emerald)">honest answers</em></h2></div>
   <div style="margin-top:40px">
-    <div class="faq-item fi" onclick="this.querySelector('.faq-a').classList.toggle('open');this.querySelector('.arrow').classList.toggle('open')"><div class="faq-q"><span>Can AgroVeri+ detect fake certificates?</span><svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B5E3B" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a"><p>Phase 1: integrity. Phase 2: source verification via ECOCERT/IMO + OTBIS. Phase 3: AI format analysis.</p></div></div>
-    <div class="faq-item fi" onclick="this.querySelector('.faq-a').classList.toggle('open');this.querySelector('.arrow').classList.toggle('open')"><div class="faq-q"><span>What about garbage in, garbage out?</span><svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B5E3B" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a"><p>Phase 2 solves this — certification bodies upload directly, preventing fake documents from entering.</p></div></div>
-    <div class="faq-item fi" onclick="this.querySelector('.faq-a').classList.toggle('open');this.querySelector('.arrow').classList.toggle('open')"><div class="faq-q"><span>How does IPFS hashing work?</span><svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B5E3B" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a"><p>Cryptographic hash per document. One pixel change = different hash. Distributed and permanent.</p></div></div>
-    <div class="faq-item fi" onclick="this.querySelector('.faq-a').classList.toggle('open');this.querySelector('.arrow').classList.toggle('open')"><div class="faq-q"><span>Is AgroVeri+ EUDR-compliant?</span><svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B5E3B" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a"><p>Yes — plot-level geolocation, traceability, and DDS preparation for Dec 2026 / June 2027 deadlines.</p></div></div>
+    <div class="faq-item fi" onclick="this.querySelector('.faq-a').classList.toggle('open');this.querySelector('.arrow').classList.toggle('open')"><div class="faq-q"><span data-i18n="faq1.q">Can AgroVeri+ detect fake certificates?</span><svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B5E3B" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a"><p data-i18n="faq1.a">Phase 1: integrity. Phase 2: source verification via ECOCERT/IMO + OTBIS. Phase 3: AI format analysis.</p></div></div>
+    <div class="faq-item fi" onclick="this.querySelector('.faq-a').classList.toggle('open');this.querySelector('.arrow').classList.toggle('open')"><div class="faq-q"><span data-i18n="faq2.q">What about garbage in, garbage out?</span><svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B5E3B" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a"><p data-i18n="faq2.a">Phase 2 solves this — certification bodies upload directly, preventing fake documents from entering.</p></div></div>
+    <div class="faq-item fi" onclick="this.querySelector('.faq-a').classList.toggle('open');this.querySelector('.arrow').classList.toggle('open')"><div class="faq-q"><span data-i18n="faq3.q">How does IPFS hashing work?</span><svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B5E3B" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a"><p data-i18n="faq3.a">Cryptographic hash per document. One pixel change = different hash. Distributed and permanent.</p></div></div>
+    <div class="faq-item fi" onclick="this.querySelector('.faq-a').classList.toggle('open');this.querySelector('.arrow').classList.toggle('open')"><div class="faq-q"><span data-i18n="faq4.q">Is AgroVeri+ EUDR-compliant?</span><svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B5E3B" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a"><p data-i18n="faq4.a">Yes — plot-level geolocation, traceability, and DDS preparation for Dec 2026 / June 2027 deadlines.</p></div></div>
   </div>
 </section>
 
 <section class="cta" id="contact">
   <div class="cta-inner fi">
-    <span class="tag tag-light">Get in Touch</span>
-    <h2>Ready to make your supply chain <em>fraud-proof</em>?</h2>
-    <p>Upload a certificate, seal it with IPFS, generate a QR code — try it now.</p>
-    <a href="demo.html" class="btn-gold" style="font-size:16px;padding:14px 36px;margin-bottom:32px">Try the Demo →</a>
+    <span class="tag tag-light" data-i18n="cta.tag">Get in Touch</span>
+    <h2 data-i18n="cta.h2">Ready to make your supply chain <em>fraud-proof</em>?</h2>
+    <p data-i18n="cta.p">Upload a certificate, seal it with IPFS, generate a QR code — try it now.</p>
+    <a href="demo.html" class="btn-gold" style="font-size:16px;padding:14px 36px;margin-bottom:32px" data-i18n="cta.btn">Try the Demo →</a>
     <div style="margin-top:32px;display:flex;flex-direction:column;gap:10px;align-items:center">
       <div style="font-family:'Instrument Serif',serif;font-size:20px;color:#fff">Esra Tepikoğlu Karabulut</div>
       <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center">
@@ -315,12 +320,12 @@ footer{background:#070F0B;padding:50px clamp(20px,4vw,40px) 36px}
         <svg width="26" height="26" viewBox="0 0 48 48" fill="none"><path d="M24 4L8 11v10c0 11.5 6.8 18.7 16 23 9.2-4.3 16-11.5 16-23V11L24 4z" fill="rgba(255,255,255,.06)" stroke="#E8D48B" stroke-width="1.5"/><path d="M24 26c-3-1-7-1.5-9 1.5 2.5 3 6 3.5 9 1.5z" fill="#C9A84C" opacity=".7"/><path d="M20 32l3 3 5-6" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
         <span style="font-family:'Instrument Serif',serif;font-size:17px;color:#fff">AgroVeri<span style="color:#C9A84C">+</span></span>
       </div>
-      <p>Digital traceability for organic agriculture.</p>
+      <p data-i18n="footer.desc">Digital traceability for organic agriculture.</p>
     </div>
     <div class="footer-cols">
-      <div class="footer-col"><h5>Platform</h5><a href="#solution">Solution</a><a href="#defense">Defense</a><a href="#roadmap">Roadmap</a><a href="#faq">FAQ</a></div>
-      <div class="footer-col"><h5>Integrations</h5><span class="mono">OTBIS</span><span class="mono">ePhyto Hub</span><span class="mono">TRACES-NT</span><span class="mono">EUDR</span></div>
-      <div class="footer-col"><h5>Contact</h5><a href="demo.html" class="gold">Demo</a><a href="mailto:esratepikoglu@gmail.com" style="color:var(--gold)">esratepikoglu@gmail.com</a><span style="font-size:12px;color:rgba(255,255,255,.25)">+90 539 216 96 89</span><span style="font-size:12px;color:rgba(255,255,255,.25)">Çorlu, Tekirdağ — Türkiye</span></div>
+      <div class="footer-col"><h5 data-i18n="footer.platform">Platform</h5><a href="#solution">Solution</a><a href="#defense">Defense</a><a href="#roadmap">Roadmap</a><a href="#faq">FAQ</a></div>
+      <div class="footer-col"><h5 data-i18n="footer.integrations">Integrations</h5><span class="mono">OTBIS</span><span class="mono">ePhyto Hub</span><span class="mono">TRACES-NT</span><span class="mono">EUDR</span></div>
+      <div class="footer-col"><h5 data-i18n="footer.contact">Contact</h5><a href="demo.html" class="gold">Demo</a><a href="mailto:esratepikoglu@gmail.com" style="color:var(--gold)">esratepikoglu@gmail.com</a><span style="font-size:12px;color:rgba(255,255,255,.25)">+90 539 216 96 89</span><span style="font-size:12px;color:rgba(255,255,255,.25)">Çorlu, Tekirdağ — Türkiye</span></div>
     </div>
   </div>
   <div class="footer-bottom">
@@ -336,5 +341,6 @@ document.querySelectorAll('.fi').forEach(el=>obs.observe(el));
 const cobs=new IntersectionObserver(e=>{e.forEach(x=>{if(x.isIntersecting&&!x.target.dataset.done){x.target.dataset.done='1';const end=parseInt(x.target.dataset.count),suffix=x.target.dataset.suffix||'+',t0=Date.now();const go=()=>{const p=Math.min((Date.now()-t0)/2000,1),v=Math.floor((1-Math.pow(1-p,3))*end);x.target.textContent=v.toLocaleString()+suffix;if(p<1)requestAnimationFrame(go)};go()}})},{threshold:0.3});
 document.querySelectorAll('.stat-num').forEach(el=>cobs.observe(el));
 </script>
+<script src="i18n.js"></script>
 </body>
 </html>

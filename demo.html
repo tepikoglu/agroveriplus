@@ -125,10 +125,11 @@ body{font-family:var(--sans);background:var(--off);color:var(--txt);min-height:1
   </a>
   <div class="nav-right">
     <span id="mode-badge" style="font-family:var(--mono);font-size:10px;font-weight:600;padding:3px 10px;border-radius:6px;background:rgba(201,168,76,.15);color:#C9A84C">Demo Mode</span>
-    <a href="index.html" class="nav-back">← Back to site</a>
+    <a href="index.html" class="nav-back" data-i18n="demo.back">← Back to site</a>
+    <div style="display:flex;gap:2px;margin:0 4px"><button class="lang-btn active" data-lang="en" onclick="setLang('en')" style="font-family:var(--mono);font-size:10px;font-weight:600;padding:3px 8px;border-radius:5px;border:none;cursor:pointer;background:rgba(255,255,255,.12);color:var(--gold)">EN</button><button class="lang-btn" data-lang="tr" onclick="setLang('tr')" style="font-family:var(--mono);font-size:10px;font-weight:600;padding:3px 8px;border-radius:5px;border:none;cursor:pointer;background:transparent;color:rgba(255,255,255,.4)">TR</button></div>
     <div class="nav-tabs">
-      <button class="nav-tab active" onclick="showPage('farmer')">Farmer</button>
-      <button class="nav-tab" onclick="showPage('consumer')">Consumer</button>
+      <button class="nav-tab active" onclick="showPage('farmer')" data-i18n="demo.farmer">Farmer</button>
+      <button class="nav-tab" onclick="showPage('consumer')" data-i18n="demo.consumer">Consumer</button>
     </div>
   </div>
 </nav>
@@ -137,21 +138,21 @@ body{font-family:var(--sans);background:var(--off);color:var(--txt);min-height:1
   <!-- FARMER -->
   <div id="page-farmer" class="page active">
     <div class="steps" id="steps">
-      <div class="stp on" data-s="1"><div class="stp-n">1</div><div class="stp-l">Upload</div></div>
-      <div class="stp" data-s="2"><div class="stp-n">2</div><div class="stp-l">Seal</div></div>
-      <div class="stp" data-s="3"><div class="stp-n">3</div><div class="stp-l">QR Code</div></div>
+      <div class="stp on" data-s="1"><div class="stp-n">1</div><div class="stp-l" data-i18n="demo.step1">Upload</div></div>
+      <div class="stp" data-s="2"><div class="stp-n">2</div><div class="stp-l" data-i18n="demo.step2">Seal</div></div>
+      <div class="stp" data-s="3"><div class="stp-n">3</div><div class="stp-l" data-i18n="demo.step3">QR Code</div></div>
     </div>
 
     <div id="s1" class="card">
-      <div class="card-title">Upload Certificate</div>
-      <div class="card-desc">Upload your organic certificate. A cryptographic seal will be generated and you'll receive a verifiable QR code.</div>
+      <div class="card-title" data-i18n="demo.upload.title">Upload Certificate</div>
+      <div class="card-desc" data-i18n="demo.upload.desc">Upload your organic certificate. A cryptographic seal will be generated and you'll receive a verifiable QR code.</div>
       <div class="upload" onclick="document.getElementById('fi').click()">
         <div class="upload-icon">📄</div>
-        <div class="upload-text">Drop your certificate here</div>
-        <div class="upload-hint">PDF, JPG, PNG — Max 10 MB</div>
+        <div class="upload-text" data-i18n="demo.upload.drop">Drop your certificate here</div>
+        <div class="upload-hint" data-i18n="demo.upload.hint">PDF, JPG, PNG — Max 10 MB</div>
         <div class="upload-btns">
-          <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();document.getElementById('fi').click()">Choose File</button>
-          <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();document.getElementById('ci').click()">Take Photo</button>
+          <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();document.getElementById('fi').click()" data-i18n="demo.upload.choose">Choose File</button>
+          <button class="btn btn-outline btn-sm" onclick="event.stopPropagation();document.getElementById('ci').click()" data-i18n="demo.upload.photo">Take Photo</button>
         </div>
       </div>
       <input type="file" id="fi" accept=".pdf,.jpg,.jpeg,.png" style="display:none" onchange="handleFile(this.files[0])">
@@ -159,55 +160,55 @@ body{font-family:var(--sans);background:var(--off);color:var(--txt);min-height:1
     </div>
 
     <div id="s2" class="card" style="display:none">
-      <div class="card-title">Digital Seal</div>
-      <div id="s2-loading"><div class="spinner"></div><p style="text-align:center;color:var(--txtL);font-size:14px">Generating hash...</p></div>
+      <div class="card-title" data-i18n="demo.seal.title">Digital Seal</div>
+      <div id="s2-loading"><div class="spinner"></div><p style="text-align:center;color:var(--txtL);font-size:14px" data-i18n="demo.seal.loading">Generating hash...</p></div>
       <div id="s2-done" style="display:none">
         <div class="file-info"><div class="file-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1B5E3B" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></div><div><div class="file-name" id="fn"></div><div class="file-size" id="fs"></div></div></div>
-        <div class="hash-wrap"><div class="hash-label">SHA-256 Digital Seal</div><div class="hash-box"><div class="hash-val" id="hv"></div><button class="hash-copy" onclick="copyH()">Copy</button></div></div>
-        <button class="btn btn-primary" onclick="genQR()" style="margin-top:16px">Generate QR Code</button>
+        <div class="hash-wrap"><div class="hash-label" data-i18n="demo.seal.label">SHA-256 Digital Seal</div><div class="hash-box"><div class="hash-val" id="hv"></div><button class="hash-copy" onclick="copyH()" data-i18n="demo.seal.copy">Copy</button></div></div>
+        <button class="btn btn-primary" onclick="genQR()" style="margin-top:16px" data-i18n="demo.seal.btn">Generate QR Code</button>
       </div>
     </div>
 
     <div id="s3" class="card" style="display:none">
-      <div class="card-title">Your QR Code is Ready</div>
-      <div class="card-desc">Attach this QR code to your product packaging. Consumers can scan it to verify your certificate.</div>
+      <div class="card-title" data-i18n="demo.qr.title">Your QR Code is Ready</div>
+      <div class="card-desc" data-i18n="demo.qr.desc">Attach this QR code to your product packaging. Consumers can scan it to verify your certificate.</div>
       <div class="qr-wrap"><div id="qr-display"></div></div>
       <div class="btn-group">
-        <button class="btn btn-primary btn-sm" onclick="dlQR()">Download</button>
-        <button class="btn btn-gold btn-sm" onclick="shareQR()">Share</button>
+        <button class="btn btn-primary btn-sm" onclick="dlQR()" data-i18n="demo.qr.download">Download</button>
+        <button class="btn btn-gold btn-sm" onclick="shareQR()" data-i18n="demo.qr.share">Share</button>
       </div>
       <div class="info-box">
-        <strong>▸</strong> Your certificate is now digitally sealed.<br>
-        <strong>▸</strong> This seal is immutable — backed by cryptographic proof.<br>
-        <strong>▸</strong> Consumers verify authenticity by scanning the QR code.
+        <strong>▸</strong> <span data-i18n="demo.qr.info1">Your certificate is now digitally sealed.</span><br>
+        <strong>▸</strong> <span data-i18n="demo.qr.info2">This seal is immutable — backed by cryptographic proof.</span><br>
+        <strong>▸</strong> <span data-i18n="demo.qr.info3">Consumers verify authenticity by scanning the QR code.</span>
       </div>
-      <button class="btn btn-outline" style="width:100%;margin-top:18px" onclick="reset()">Upload New Certificate</button>
+      <button class="btn btn-outline" style="width:100%;margin-top:18px" onclick="reset()" data-i18n="demo.qr.new">Upload New Certificate</button>
     </div>
   </div>
 
   <!-- CONSUMER -->
   <div id="page-consumer" class="page">
     <div id="cs" class="card">
-      <div class="card-title">Scan QR Code</div>
-      <div class="card-desc">Point your camera at the AgroVeri+ QR code on the product.</div>
+      <div class="card-title" data-i18n="demo.scan.title">Scan QR Code</div>
+      <div class="card-desc" data-i18n="demo.scan.desc">Point your camera at the AgroVeri+ QR code on the product.</div>
       <div id="scanner-container"></div>
-      <button class="btn btn-primary" id="bstart" onclick="startScan()">Open Camera</button>
-      <button class="btn btn-outline" id="bstop" style="display:none;width:100%;margin-top:8px" onclick="stopScan()">Close Camera</button>
-      <div style="text-align:center;margin:18px 0;color:var(--txtL);font-size:13px">— or enter hash manually —</div>
-      <input type="text" id="mh" class="input-hash" placeholder="Paste hash code here...">
-      <button class="btn btn-outline" style="width:100%;margin-top:10px" onclick="manualV()">Verify</button>
+      <button class="btn btn-primary" id="bstart" onclick="startScan()" data-i18n="demo.scan.open">Open Camera</button>
+      <button class="btn btn-outline" id="bstop" style="display:none;width:100%;margin-top:8px" onclick="stopScan()" data-i18n="demo.scan.close">Close Camera</button>
+      <div style="text-align:center;margin:18px 0;color:var(--txtL);font-size:13px" data-i18n="demo.scan.or">— or enter hash manually —</div>
+      <input type="text" id="mh" class="input-hash" data-i18n="demo.scan.placeholder" placeholder="Paste hash code here...">
+      <button class="btn btn-outline" style="width:100%;margin-top:10px" onclick="manualV()" data-i18n="demo.scan.verify">Verify</button>
     </div>
 
     <div id="cr" style="display:none">
       <div id="cr-ok" style="display:none">
-        <div class="result ok"><div class="result-icon">✅</div><div class="result-title">Verified</div><div class="result-desc">This certificate is authentic and has not been altered.</div></div>
+        <div class="result ok"><div class="result-icon">✅</div><div class="result-title" data-i18n="demo.result.ok.title">Verified</div><div class="result-desc" data-i18n="demo.result.ok.desc">This certificate is authentic and has not been altered.</div></div>
         <div class="card"><div style="font-family:var(--mono);font-size:10px;color:var(--emerald);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:14px;font-weight:500">Certificate Details</div><div class="detail-rows" id="det"></div></div>
-        <div class="card"><div style="font-family:var(--mono);font-size:10px;color:var(--emerald);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;font-weight:500">Trust Layer</div><div style="display:flex;align-items:center;gap:12px;padding:10px 0"><div style="width:40px;height:40px;border-radius:10px;background:rgba(27,94,59,.06);display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1B5E3B" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div><div><div style="font-size:13px;font-weight:600;color:var(--emerald)">Digital seal intact</div><div style="font-size:11px;color:var(--txtL)" id="sd"></div></div></div>
+        <div class="card"><div style="font-family:var(--mono);font-size:10px;color:var(--emerald);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:10px;font-weight:500">Trust Layer</div><div style="display:flex;align-items:center;gap:12px;padding:10px 0"><div style="width:40px;height:40px;border-radius:10px;background:rgba(27,94,59,.06);display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1B5E3B" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div><div><div style="font-size:13px;font-weight:600;color:var(--emerald)" data-i18n="demo.result.intact">Digital seal intact</div><div style="font-size:11px;color:var(--txtL)" id="sd"></div></div></div>
         <div class="hash-wrap"><div class="hash-label">SHA-256 Hash</div><div class="hash-box"><div class="hash-val" id="vh"></div></div></div>
         </div>
       </div>
-      <div id="cr-fail" style="display:none"><div class="result fail"><div class="result-icon">⚠️</div><div class="result-title">Not Verified</div><div class="result-desc">This certificate was not found in the system. Request the original from your supplier.</div></div></div>
-      <button class="btn btn-outline" style="width:100%;margin-top:18px" onclick="resetC()">Scan Another QR</button>
+      <div id="cr-fail" style="display:none"><div class="result fail"><div class="result-icon">⚠️</div><div class="result-title" data-i18n="demo.result.fail.title">Not Verified</div><div class="result-desc" data-i18n="demo.result.fail.desc">This certificate was not found in the system. Request the original from your supplier.</div></div></div>
+      <button class="btn btn-outline" style="width:100%;margin-top:18px" onclick="resetC()" data-i18n="demo.result.another">Scan Another QR</button>
     </div>
   </div>
 </div>
@@ -430,5 +431,6 @@ function toast(m){const t=document.getElementById('toast');t.textContent=m;t.cla
 // Init
 checkAPI();
 </script>
+<script src="i18n.js"></script>
 </body>
 </html>
