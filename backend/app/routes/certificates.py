@@ -1,0 +1,118 @@
+from fastapi import APIRouter, Depends, HTTPException, Request, UploadFile, File
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.config import settings
+from app.database import get_db
+from app.schemas import CertificateUploadResponse, VerifyRequest, VerifyResponse
+from app.services.certificate_service import (
+    compute_sha256,
+    find_by_hash,
+    log_verification,
+    store_certificate,
+)
+from app.services.ipfs_service import pin_to_ipfs
+
+router = APIRouter()
+
+MAX_UPLOAD_BYTES = settings.max_upload_size_mb * 1024 * 1024
+
+
+@router.post("/upload", response_model=CertificateUploadResponse)
+async def upload_certificate(
+    file: UploadFile = File(...),
+    db: AsyncSession = Depends(get_db),
+):
+    """Upload a certificate file and generate its SHA-256 hash + QR data."""
+    # Validate extension
+    ext = (file.filename or "").rsplit(".", 1)[-1].lower()
+    if ext not in settings.allowed_extensions:
+        raise HTTPException(400, f"File type .{ext} not allowed. Use: {settings.allowed_extensions}")
+
+    # Read and validate size
+    file_bytes = await file.read()
+    if len(file_bytes) > MAX_UPLOAD_BYTES:
+        raise HTTPException(400, f"File exceeds {settings.max_upload_size_mb} MB limit")
+
+    sha256_hash = await compute_sha256(file_bytes)
+
+    # Check for duplicate
+    existing = await find_by_hash(db, sha256_hash)
+    if existing:
+        return CertificateUploadResponse(
+            id=existing.id,
+            sha256_hash=existing.sha256_hash,
+            original_filename=existing.original_filename,
+            file_size=existing.file_size,
+            ipfs_cid=existing.ipfs_cid,
+            created_at=existing.created_at,
+            qr_data=existing.sha256_hash,
+        )
+
+    # Pin to IPFS (if configured)
+    ipfs_cid = await pin_to_ipfs(file_bytes, file.filename or "certificate")
+
+    cert = await store_certificate(
+        db,
+        sha256_hash=sha256_hash,
+        original_filename=file.filename or "unknown",
+        file_size=len(file_bytes),
+        content_type=file.content_type or "application/octet-stream",
+    )
+
+    if ipfs_cid:
+        cert.ipfs_cid = ipfs_cid
+        await db.commit()
+
+    return CertificateUploadResponse(
+        id=cert.id,
+        sha256_hash=cert.sha256_hash,
+        original_filename=cert.original_filename,
+        file_size=cert.file_size,
+        ipfs_cid=cert.ipfs_cid,
+        created_at=cert.created_at,
+        qr_data=cert.sha256_hash,
+    )
+
+
+@router.post("/verify", response_model=VerifyResponse)
+async def verify_certificate(
+    body: VerifyRequest,
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+):
+    """Verify a certificate by its SHA-256 hash."""
+    cert = await find_by_hash(db, body.hash)
+    is_valid = cert is not None
+
+    await log_verification(
+        db,
+        queried_hash=body.hash,
+        is_valid=is_valid,
+        certificate_id=cert.id if cert else None,
+        ip_address=request.client.host if request.client else None,
+        user_agent=request.headers.get("user-agent"),
+    )
+
+    if cert:
+        from app.schemas import CertificateDetail
+
+        return VerifyResponse(
+            verified=True,
+            message="Certificate is authentic and has not been altered.",
+            certificate=CertificateDetail.model_validate(cert),
+        )
+
+    return VerifyResponse(
+        verified=False,
+        message="Certificate not found. Request the original from your supplier.",
+    )
+
+
+@router.get("/{sha256_hash}", response_model=VerifyResponse)
+async def get_certificate(
+    sha256_hash: str,
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+):
+    """Look up a certificate by hash (used by QR code scans)."""
+    return await verify_certificate(VerifyRequest(hash=sha256_hash), request, db)
