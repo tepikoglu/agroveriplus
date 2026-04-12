@@ -74,6 +74,11 @@ async def upload_certificate(
         cert.ipfs_cid = ipfs_cid
         await db.commit()
 
+    # Notify if authenticated
+    if current_user:
+        from app.services.notifications import NotificationEvent, notify
+        await notify(db, user_id=current_user.id, event=NotificationEvent.certificate_uploaded, filename=file.filename or "unknown")
+
     return CertificateUploadResponse(
         id=cert.id,
         sha256_hash=cert.sha256_hash,
@@ -184,6 +189,12 @@ async def run_external_check(
         summary = f"{valid_count}/{total} registries confirmed. Some could not verify."
     else:
         summary = "No external registry could verify this certificate."
+
+    # Notify certificate owner about failed checks
+    if valid_count < total and cert.farmer_id:
+        from app.services.notifications import NotificationEvent, notify as _notify
+        failed = [r.provider for r in results if r.status != "valid"]
+        await _notify(db, user_id=cert.farmer_id, event=NotificationEvent.external_check_failed, filename=cert.original_filename, provider=", ".join(failed))
 
     return ExternalCheckResult(
         certificate_id=cert.id,

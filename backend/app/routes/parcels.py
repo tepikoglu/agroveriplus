@@ -24,6 +24,10 @@ async def create_parcel(
     db.add(parcel)
     await db.commit()
     await db.refresh(parcel)
+
+    from app.services.notifications import NotificationEvent, notify
+    await notify(db, user_id=user.id, event=NotificationEvent.parcel_created, parcel_name=body.name, area_hectares=body.area_hectares)
+
     return parcel
 
 

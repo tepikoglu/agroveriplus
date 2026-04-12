@@ -20,6 +20,21 @@
 | GitHub Pages demo (jüri erişimi) | ✅ |
 | 35 test (auth, upload, verify, service) | ✅ |
 
+## Sprint 2 İlerleme Durumu
+
+| Bileşen | Durum | Test |
+|---------|-------|------|
+| Parsel modeli + CRUD + EUDR summary | ✅ | 9 |
+| Sertifika metadata güncelleme | ✅ | 3 |
+| Sertifika ↔ Parsel bağlantısı | ✅ | — |
+| Dış kayıt sorgusu (OTBIS/ECOCERT/ETKO mock) | ✅ | 4 |
+| Dashboard stats endpoint | ✅ | 3 |
+| Bildirim sistemi (model + servis + endpoint) | ✅ | 7 |
+| EN/TR dil desteği (index + demo) | ✅ | — |
+| Google OAuth | ⏳ Sprint 3 | — |
+| Frontend dashboard sayfası | ⏳ Sprint 3 | — |
+| **Toplam test** | **61 passing** | |
+
 ---
 
 ## Sprint 2 Hedefleri
