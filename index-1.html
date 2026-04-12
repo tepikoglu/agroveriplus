@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgroVeri+ | Digital Traceability for Organic Agriculture</title>
+<meta name="description" content="AgroVeri+ secures organic supply chains with IPFS-backed document integrity, cross-database verification, and satellite-powered volume validation.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><path d='M24 4L8 11v10c0 11.5 6.8 18.7 16 23 9.2-4.3 16-11.5 16-23V11L24 4z' fill='%231B5E3B' stroke='%23C9A84C' stroke-width='2'/><path d='M20 32l3 3 5-6' stroke='white' stroke-width='2' fill='none' stroke-linecap='round'/></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--forest:#0A1F14;--deep:#0D2B1A;--emerald:#1B5E3B;--mint:#2D8B5E;--gold:#C9A84C;--goldL:#E8D48B;--cream:#F5F7F0;--off:#FAFBF7;--txt:#1A1D1B;--txtL:#6B7C72;--red:#B83230;--w:#FFFFFF}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:var(--off);color:var(--txt);overflow-x:hidden}
+::selection{background:var(--emerald);color:#fff}
+.serif{font-family:'Instrument Serif',serif}
+.mono{font-family:'IBM Plex Mono',monospace}
+img{max-width:100%}
+a{text-decoration:none;color:inherit}
+
+/* Fade in on scroll */
+.fi{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+.fi.show{opacity:1;transform:translateY(0)}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 40px;height:70px;display:flex;align-items:center;justify-content:space-between;transition:all .4s}
+.nav.scrolled{background:rgba(10,31,20,.95);backdrop-filter:blur(20px)}
+.nav-brand{display:flex;align-items:center;gap:10px;cursor:pointer}
+.nav-brand svg{flex-shrink:0}
+.nav-brand span{font-family:'Instrument Serif',serif;font-size:20px;color:#fff}
+.nav-brand span b{color:var(--gold);font-weight:400}
+.nav-links{display:flex;gap:26px;align-items:center}
+.nav-links a{font-size:13px;font-weight:500;color:rgba(255,255,255,.7);transition:color .2s}
+.nav-links a:hover{color:var(--gold)}
+.btn-demo{font-size:13px;font-weight:600;color:var(--forest);background:var(--gold);padding:8px 20px;border-radius:8px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;transition:background .2s}
+.btn-demo:hover{background:var(--goldL)}
+
+/* HERO */
+.hero{background:linear-gradient(170deg,var(--forest),var(--deep) 50%,#0F3322);padding:155px 40px 95px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;opacity:.03;background-image:radial-gradient(circle at 1px 1px,rgba(255,255,255,.8) 1px,transparent 0);background-size:40px 40px}
+.hero-glow{position:absolute;top:-20%;right:-10%;width:60%;height:80%;background:radial-gradient(ellipse,rgba(27,94,59,.15),transparent 70%);filter:blur(80px)}
+.hero-inner{max-width:1200px;margin:0 auto;position:relative;z-index:1}
+.tag{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;display:inline-flex;align-items:center;gap:8px}
+.tag::before{content:'';width:24px;height:1px;display:inline-block}
+.tag-light{color:var(--goldL)}.tag-light::before{background:var(--goldL)}
+.tag-dark{color:var(--gold)}.tag-dark::before{background:var(--gold)}
+.hero h1{font-family:'Instrument Serif',serif;font-size:64px;font-weight:400;line-height:1.08;color:#fff;margin:22px 0;max-width:800px}
+.hero h1 em{color:var(--gold);font-style:italic}
+.hero p{font-size:17px;line-height:1.65;color:rgba(255,255,255,.6);max-width:520px;margin-bottom:36px}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap}
+.btn-gold{font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;color:var(--forest);background:var(--gold);padding:13px 30px;border-radius:10px;border:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.btn-ghost{font-family:'DM Sans',sans-serif;font-size:15px;font-weight:500;color:rgba(255,255,255,.7);background:transparent;padding:13px 22px;border-radius:10px;cursor:pointer;border:1px solid rgba(255,255,255,.15)}
+.hash-preview{margin-top:55px;padding:14px 22px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);border-radius:12px;display:inline-flex;gap:10px;align-items:center}
+.hash-preview .mono{font-size:12px;color:rgba(255,255,255,.35)}
+.hash-preview .verified{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--emerald);font-weight:500;padding:2px 7px;background:rgba(27,94,59,.15);border-radius:4px}
+
+/* STATS */
+.stats{background:var(--w);border-bottom:1px solid var(--cream)}
+.stats-inner{max-width:1200px;margin:0 auto;padding:36px 40px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+.stat{text-align:center;flex:1 1 140px}
+.stat-num{font-family:'Instrument Serif',serif;font-size:34px;color:var(--forest);line-height:1}
+.stat-label{font-size:12px;color:var(--txtL);margin-top:5px}
+
+/* SECTIONS */
+.sec{padding:90px 40px}
+.sec-inner{max-width:1200px;margin:0 auto}
+.sec h2{font-family:'Instrument Serif',serif;font-size:42px;font-weight:400;line-height:1.15;margin:14px 0 10px}
+.sec h2 em{font-style:italic}
+.sec>p,.sec-inner>p{font-size:16px;line-height:1.65;color:var(--txtL);max-width:580px;margin-bottom:44px}
+.sec-dark{background:var(--forest);color:#fff}
+.sec-cream{background:var(--cream)}
+.sec-white{background:var(--w)}
+.sec-center{text-align:center}
+.sec-center h2,.sec-center p{margin-left:auto;margin-right:auto}
+
+/* GRID */
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.g4{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px}
+
+/* CASE CARDS */
+.case-card{background:var(--w);border:1px solid #E8EBE5;border-radius:16px;padding:28px 24px;transition:all .3s}
+.case-card:hover{transform:translateY(-3px);border-color:rgba(184,50,48,.2)}
+.case-head{display:flex;justify-content:space-between;margin-bottom:14px}
+.case-tag{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;color:var(--red);background:rgba(184,50,48,.08);padding:3px 8px;border-radius:6px}
+.case-icon{font-size:26px}
+.case-card h4{font-family:'Instrument Serif',serif;font-size:20px;font-weight:400;margin-bottom:8px;line-height:1.3}
+.case-card p{font-size:13.5px;line-height:1.6;color:var(--txtL);margin-bottom:14px}
+.case-meta{display:flex;gap:14px;font-size:11px}
+.case-meta .amt{font-family:'IBM Plex Mono',monospace;font-weight:500;color:var(--red)}
+.case-meta .loc{color:var(--txtL)}
+
+/* PILLAR CARDS (dark bg) */
+.pillar{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:32px 26px;height:100%}
+.pillar .phase{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;display:block;margin-top:18px}
+.pillar h3{font-family:'Instrument Serif',serif;font-size:24px;font-weight:400;color:#fff;margin:6px 0 10px}
+.pillar p{font-size:14px;line-height:1.65;color:rgba(255,255,255,.55);margin-bottom:18px}
+.pillar-tags{display:flex;gap:7px;flex-wrap:wrap}
+.pillar-tags span{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--goldL);border:1px solid rgba(201,168,76,.2);padding:3px 9px;border-radius:5px}
+
+/* THREAT ROWS */
+.threat-row{display:grid;grid-template-columns:1fr 50px 1fr;align-items:stretch;margin-bottom:28px}
+.threat-side{border-radius:14px;padding:22px 18px}
+.threat-l{background:rgba(184,50,48,.04);border:1px solid rgba(184,50,48,.12)}
+.threat-r{background:rgba(27,94,59,.04);border:1px solid rgba(27,94,59,.15)}
+.threat-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.08em;display:flex;align-items:center;gap:6px;margin-bottom:8px}
+.threat-badge.red{color:var(--red)}.threat-badge.green{color:var(--emerald)}
+.threat-side h5{font-family:'Instrument Serif',serif;font-size:17px;font-weight:400;margin-bottom:6px}
+.threat-side p{font-size:13px;line-height:1.55;color:var(--txtL);margin:0}
+.threat-r p{color:var(--txt)}
+.threat-arrow{display:flex;align-items:center;justify-content:center}
+.threat-arrow div{width:36px;height:36px;border-radius:50%;background:var(--emerald);display:flex;align-items:center;justify-content:center}
+
+/* LAYER CARDS */
+.layer{border-radius:16px;padding:26px 22px;position:relative;overflow:hidden;background:var(--w);border:1px solid #E8EBE5}
+.layer.active{background:rgba(27,94,59,.06);border-color:var(--emerald)}
+.layer.active::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:linear-gradient(180deg,var(--emerald),var(--gold))}
+.layer-head{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.layer-phase{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--txtL)}
+.layer.active .layer-phase{color:var(--emerald)}
+.layer-title{font-family:'Instrument Serif',serif;font-size:19px;font-weight:400}
+.layer-items{display:flex;flex-direction:column;gap:7px}
+.layer-item{display:flex;align-items:flex-start;gap:7px;font-size:13px;line-height:1.5}
+
+/* STEP CIRCLES */
+.step-circle{width:58px;height:58px;border-radius:50%;margin:0 auto 18px;background:linear-gradient(135deg,var(--emerald),var(--forest));display:flex;align-items:center;justify-content:center;font-family:'Instrument Serif',serif;font-size:22px;color:#fff}
+
+/* PERSONA CARDS */
+.persona{background:var(--w);border:1px solid #E8EBE5;border-radius:16px;padding:28px 22px}
+.persona .emoji{font-size:34px;display:block;margin-bottom:14px}
+.persona h4{font-family:'Instrument Serif',serif;font-size:20px;font-weight:400;margin-bottom:8px}
+.persona p{font-size:13.5px;line-height:1.6;color:var(--txtL)}
+
+/* ROADMAP CARDS */
+.rm-card{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:28px 22px;position:relative;overflow:hidden}
+.rm-card.live{border-color:rgba(27,94,59,.4)}
+.rm-card.live::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--emerald),var(--gold))}
+.rm-head{display:flex;justify-content:space-between;margin-bottom:14px}
+.rm-status{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;letter-spacing:.1em}
+.rm-date{font-size:11px;color:rgba(255,255,255,.35)}
+.rm-phase{font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(255,255,255,.5);letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px}
+.rm-title{font-family:'Instrument Serif',serif;font-size:22px;font-weight:400;color:#fff;margin-bottom:18px}
+.rm-items{display:flex;flex-direction:column;gap:9px}
+.rm-item{display:flex;align-items:center;gap:9px;font-size:13px}
+
+/* FAQ */
+.faq-item{border-bottom:1px solid var(--cream);cursor:pointer}
+.faq-q{display:flex;justify-content:space-between;align-items:center;padding:22px 0;gap:16px}
+.faq-q span{font-size:16px;font-weight:500;flex:1}
+.faq-q .arrow{transition:transform .3s;flex-shrink:0}
+.faq-q .arrow.open{transform:rotate(180deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s}
+.faq-a.open{max-height:300px}
+.faq-a p{font-size:14.5px;line-height:1.7;color:var(--txtL);padding-bottom:22px}
+
+/* CTA */
+.cta{background:linear-gradient(170deg,var(--forest),#0F3322);padding:90px 40px;position:relative;text-align:center}
+.cta::before{content:'';position:absolute;inset:0;opacity:.04;background-image:radial-gradient(circle at 1px 1px,rgba(255,255,255,.8) 1px,transparent 0);background-size:32px 32px}
+.cta-inner{max-width:680px;margin:0 auto;position:relative;z-index:1}
+.cta h2{font-family:'Instrument Serif',serif;font-size:44px;font-weight:400;color:#fff;margin:14px 0;line-height:1.15}
+.cta h2 em{color:var(--gold);font-style:italic}
+.cta p{font-size:16px;line-height:1.65;color:rgba(255,255,255,.55);margin-bottom:36px}
+
+/* FOOTER */
+footer{background:#070F0B;padding:50px 40px 36px}
+.footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;flex-wrap:wrap;gap:36px}
+.footer-brand{max-width:280px}
+.footer-brand p{font-size:12.5px;line-height:1.6;color:rgba(255,255,255,.35);margin-top:14px}
+.footer-cols{display:flex;gap:50px;flex-wrap:wrap}
+.footer-col h5{font-size:11px;font-weight:600;color:rgba(255,255,255,.5);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
+.footer-col a,.footer-col span{display:block;font-size:13px;color:rgba(255,255,255,.35);margin-bottom:9px;cursor:pointer}
+.footer-col a:hover{color:var(--gold)}
+.footer-col .gold{color:var(--gold)}
+.footer-col .mono-item{font-family:'IBM Plex Mono',monospace;font-size:11px;color:rgba(255,255,255,.25)}
+.footer-bottom{max-width:1200px;margin:36px auto 0;padding-top:20px;border-top:1px solid rgba(255,255,255,.06);display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;font-size:11px;color:rgba(255,255,255,.2)}
+
+/* SVG icons inline */
+.ico{display:inline-flex;vertical-align:middle}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .nav{padding:0 16px}.nav-links{display:none}
+  .hero{padding:120px 20px 70px}
+  .hero h1{font-size:36px}
+  .sec{padding:60px 20px}
+  .sec h2{font-size:30px}
+  .g3,.g2{grid-template-columns:1fr}
+  .threat-row{grid-template-columns:1fr}
+  .threat-arrow{display:none}
+  .stats-inner{flex-direction:column;gap:24px}
+  .cta h2{font-size:32px}
+}
+@media(min-width:769px) and (max-width:1024px){
+  .g3{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-brand" onclick="document.getElementById('hero').scrollIntoView({behavior:'smooth'})">
+    <svg width="28" height="28" viewBox="0 0 48 48" fill="none"><path d="M24 4L8 11v10c0 11.5 6.8 18.7 16 23 9.2-4.3 16-11.5 16-23V11L24 4z" fill="rgba(255,255,255,.06)" stroke="#E8D48B" stroke-width="1.5"/><path d="M24 38V20" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round"/><path d="M24 26c-3-1-7-1.5-9 1.5 2.5 3 6 3.5 9 1.5z" fill="#C9A84C" opacity=".7"/><path d="M24 20c3-1 7-1.5 9 1.5-2.5 3-6 3.5-9 1.5z" fill="#E8D48B" opacity=".6"/><path d="M20 32l3 3 5-6" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>AgroVeri<b>+</b></span>
+  </div>
+  <div class="nav-links">
+    <a href="#problem">Problem</a>
+    <a href="#solution">Solution</a>
+    <a href="#defense">Defense</a>
+    <a href="#roadmap">Roadmap</a>
+    <a href="#faq">FAQ</a>
+    <a href="demo.html" class="btn-demo">Demo</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <div class="fi"><span class="tag tag-light">Digital Traceability for Organic Agriculture</span></div>
+    <div class="fi" style="transition-delay:.15s"><h1>Every Certificate. <em>Verified.</em><br>Immutable.</h1></div>
+    <div class="fi" style="transition-delay:.3s"><p>AgroVeri+ secures organic supply chains with IPFS-backed document integrity, cross-database verification, and satellite-powered volume validation.</p></div>
+    <div class="fi hero-btns" style="transition-delay:.45s">
+      <a href="demo.html" class="btn-gold">Demo →</a>
+      <a href="#problem" class="btn-ghost">See the Problem</a>
+    </div>
+    <div class="fi hash-preview" style="transition-delay:.6s">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+      <span class="mono">ipfs://QmX7b2K...4f9a</span>
+      <span class="verified">VERIFIED</span>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats">
+  <div class="stats-inner">
+    <div class="stat"><div class="stat-num" data-count="90000">0</div><div class="stat-label">tonnes flagged suspicious</div></div>
+    <div class="stat"><div class="stat-num" data-count="12" data-suffix="B€">0</div><div class="stat-label">annual fraud damage in EU</div></div>
+    <div class="stat"><div class="stat-num" data-count="500" data-suffix="%">0</div><div class="stat-label">fraud growth in organics</div></div>
+    <div class="stat"><div class="stat-num" data-count="62" data-suffix="+">0</div><div class="stat-label">ePhyto countries</div></div>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="sec" id="problem">
+  <div class="sec-inner">
+    <div class="fi"><span class="tag tag-dark">The Problem</span></div>
+    <div class="fi"><h2>Organic fraud is a <em style="color:var(--red)">billion-euro</em> industry</h2></div>
+    <div class="fi"><p>Fake documents, shell certifiers, and transit-country laundering cost legitimate farmers billions.</p></div>
+    <div class="g3">
+      <div class="fi case-card"><div class="case-head"><span class="case-tag">CASE 01</span><span class="case-icon">🫐</span></div><h4>Chilean Raspberry Scheme</h4><p>$12M organic raspberries from China re-documented as Chilean.</p><div class="case-meta"><span class="amt">$12M seized</span><span class="loc">Chile–Canada</span></div></div>
+      <div class="fi case-card" style="transition-delay:.15s"><div class="case-head"><span class="case-tag">CASE 02</span><span class="case-icon">🥜</span></div><h4>The Pistachio Cartel</h4><p>Spanish OCG sold conventional pistachios at 80% premium with forged certifications.</p><div class="case-meta"><span class="amt">€6M+</span><span class="loc">Spain–France</span></div></div>
+      <div class="fi case-card" style="transition-delay:.3s"><div class="case-head"><span class="case-tag">CASE 03</span><span class="case-icon">🍎</span></div><h4>Rotten Apple Network</h4><p>Mycotoxin-contaminated apples rebranded as organic European products.</p><div class="case-meta"><span class="amt">1,411t seized</span><span class="loc">Italy–Serbia</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTION -->
+<section class="sec sec-dark" id="solution">
+  <div class="sec-inner">
+    <div class="fi"><span class="tag tag-light">Our Solution</span></div>
+    <div class="fi"><h2 style="color:#fff">Three pillars of <em style="color:var(--gold)">trust</em></h2></div>
+    <div class="g3">
+      <div class="fi pillar"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><span class="phase">Phase 1 — Live</span><h3>Document Integrity</h3><p>IPFS hashing locks every certificate. One pixel change = new hash.</p><div class="pillar-tags"><span>IPFS</span><span>SHA-256</span></div></div>
+      <div class="fi pillar" style="transition-delay:.15s"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg><span class="phase">Phase 2</span><h3>Source Verification</h3><p>Cross-reference against OTBIS, ECOCERT, and ePhyto Hub.</p><div class="pillar-tags"><span>OTBIS</span><span>TRACES-NT</span></div></div>
+      <div class="fi pillar" style="transition-delay:.3s"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 010 8.49m-8.48-.01a6 6 0 010-8.49m11.31-2.82a10 10 0 010 14.14m-14.14 0a10 10 0 010-14.14"/></svg><span class="phase">Phase 2–3</span><h3>Volume Validation</h3><p>Satellite imagery calculates real production capacity.</p><div class="pillar-tags"><span>Sentinel-2</span><span>NDVI</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- DEFENSE -->
+<section class="sec" id="defense">
+  <div class="sec-inner">
+    <div class="fi"><span class="tag tag-dark">Fraud vs. Defense</span></div>
+    <div class="fi"><h2>Five threats. <em style="color:var(--emerald)">Five defenses.</em></h2></div>
+    <div class="fi"><p>We studied real fraud methods — then built countermeasures.</p></div>
+
+    <div class="fi threat-row"><div class="threat-side threat-l"><div class="threat-badge red">⚠ THREAT 1/5</div><h5>Transit Laundering</h5><p>Product travels Iran→UAE→EU with fabricated paperwork.</p></div><div class="threat-arrow"><div>→</div></div><div class="threat-side threat-r"><div class="threat-badge green">🛡 DEFENSE</div><p>Origin inconsistency flags impossible commodity origins.</p></div></div>
+    <div class="fi threat-row"><div class="threat-side threat-l"><div class="threat-badge red">⚠ THREAT 2/5</div><h5>Forged Certificates</h5><p>Photoshop certificates and shell certification bodies.</p></div><div class="threat-arrow"><div>→</div></div><div class="threat-side threat-r"><div class="threat-badge green">🛡 DEFENSE</div><p>IPFS hash + ECOCERT/IMO/ETKO registry cross-reference.</p></div></div>
+    <div class="fi threat-row"><div class="threat-side threat-l"><div class="threat-badge red">⚠ THREAT 3/5</div><h5>Ghost Production</h5><p>5ha farm declares 500 tonnes via fake paper records.</p></div><div class="threat-arrow"><div>→</div></div><div class="threat-side threat-r"><div class="threat-badge green">🛡 DEFENSE</div><p>Satellite parcel analysis calculates max capacity.</p></div></div>
+    <div class="fi threat-row"><div class="threat-side threat-l"><div class="threat-badge red">⚠ THREAT 4/5</div><h5>Paper Phytosanitary</h5><p>Paper certificates trivially forged at customs.</p></div><div class="threat-arrow"><div>→</div></div><div class="threat-side threat-r"><div class="threat-badge green">🛡 DEFENSE</div><p>ePhyto Hub + TRACES-NT real-time verification.</p></div></div>
+    <div class="fi threat-row"><div class="threat-side threat-l"><div class="threat-badge red">⚠ THREAT 5/5</div><h5>Crime Networks</h5><p>OCGs control certifiers, importers, and entry points.</p></div><div class="threat-arrow"><div>→</div></div><div class="threat-side threat-r"><div class="threat-badge green">🛡 DEFENSE</div><p>Multi-point cross-checks that cannot be circumvented.</p></div></div>
+  </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section class="sec sec-cream">
+  <div class="sec-inner sec-center">
+    <div class="fi"><span class="tag tag-dark">Architecture</span></div>
+    <div class="fi"><h2>Four layers of defense</h2></div>
+  </div>
+  <div class="sec-inner" style="margin-top:40px">
+    <div class="g2">
+      <div class="fi layer active"><div class="layer-head"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1B5E3B" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><div><div class="layer-phase">Phase 1 — Live</div><div class="layer-title">Document Integrity</div></div></div><div class="layer-items"><div class="layer-item">✓ IPFS hash — immutable fingerprint</div><div class="layer-item">✓ Timestamp + uploader identity</div><div class="layer-item">✓ Verified unaltered since upload</div></div></div>
+      <div class="fi layer" style="transition-delay:.1s"><div class="layer-head"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg><div><div class="layer-phase">Phase 2</div><div class="layer-title">Source Verification</div></div></div><div class="layer-items"><div class="layer-item">○ ECOCERT/IMO/ETKO registry check</div><div class="layer-item">○ OTBIS database match</div><div class="layer-item">○ ePhyto Hub + TRACES-NT</div></div></div>
+      <div class="fi layer" style="transition-delay:.2s"><div class="layer-head"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 010 8.49m-8.48-.01a6 6 0 010-8.49"/></svg><div><div class="layer-phase">Phase 2–3</div><div class="layer-title">Quantity Validation</div></div></div><div class="layer-items"><div class="layer-item">○ Satellite max production capacity</div><div class="layer-item">○ Volume vs. possibility check</div><div class="layer-item">○ Multi-season anomaly detection</div></div></div>
+      <div class="fi layer" style="transition-delay:.3s"><div class="layer-head"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A84C" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg><div><div class="layer-phase">Phase 3</div><div class="layer-title">AI Analysis</div></div></div><div class="layer-items"><div class="layer-item">○ Format validation (logo, font)</div><div class="layer-item">○ Cross-reference consistency</div><div class="layer-item">○ Duplicate number detection</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="sec sec-white">
+  <div class="sec-inner sec-center">
+    <div class="fi"><span class="tag tag-dark">How It Works</span></div>
+    <div class="fi"><h2>Three steps to <em style="color:var(--emerald)">trust</em></h2></div>
+    <div class="g3" style="margin-top:40px">
+      <div class="fi" style="text-align:center"><div class="step-circle">01</div><h3 class="serif" style="font-size:22px;font-weight:400;margin-bottom:10px">Upload</h3><p style="font-size:14px;color:var(--txtL);line-height:1.65">Upload organic or phytosanitary certificate.</p></div>
+      <div class="fi" style="text-align:center;transition-delay:.15s"><div class="step-circle">02</div><h3 class="serif" style="font-size:22px;font-weight:400;margin-bottom:10px">Hash &amp; Seal</h3><p style="font-size:14px;color:var(--txtL);line-height:1.65">IPFS hash with identity, GPS, timestamp.</p></div>
+      <div class="fi" style="text-align:center;transition-delay:.3s"><div class="step-circle">03</div><h3 class="serif" style="font-size:22px;font-weight:400;margin-bottom:10px">Verify</h3><p style="font-size:14px;color:var(--txtL);line-height:1.65">Cross-check OTBIS, ePhyto, satellite data.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- PERSONAS -->
+<section class="sec">
+  <div class="sec-inner">
+    <div class="fi"><span class="tag tag-dark">Built For</span></div>
+    <div class="fi"><h2>Who uses AgroVeri+?</h2></div>
+    <div class="g4" style="margin-top:40px">
+      <div class="fi persona"><span class="emoji">🌾</span><h4>Cooperatives</h4><p>Verify member certifications from one dashboard.</p></div>
+      <div class="fi persona" style="transition-delay:.1s"><span class="emoji">✅</span><h4>Certifiers</h4><p>Upload directly to an immutable system.</p></div>
+      <div class="fi persona" style="transition-delay:.2s"><span class="emoji">🚢</span><h4>Importers</h4><p>EUDR-ready farm-to-port traceability.</p></div>
+      <div class="fi persona" style="transition-delay:.3s"><span class="emoji">🏛️</span><h4>Regulators</h4><p>Real-time monitoring and volume checks.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ROADMAP -->
+<section class="sec sec-dark" id="roadmap">
+  <div class="sec-inner">
+    <div class="fi"><span class="tag tag-light">Roadmap</span></div>
+    <div class="fi"><h2 style="color:#fff">Building trust, <em style="color:var(--gold)">phase by phase</em></h2></div>
+    <div class="g3" style="margin-top:50px">
+      <div class="fi rm-card live"><div class="rm-head"><span class="rm-status" style="color:#1B5E3B;color:var(--emerald)">LIVE</span><span class="rm-date">Now</span></div><div class="rm-phase">Phase 1</div><div class="rm-title">Document Integrity</div><div class="rm-items"><div class="rm-item" style="color:rgba(255,255,255,.8)">✓ IPFS immutability</div><div class="rm-item" style="color:rgba(255,255,255,.8)">✓ Timestamp &amp; identity</div><div class="rm-item" style="color:rgba(255,255,255,.8)">✓ QR code per product</div><div class="rm-item" style="color:rgba(255,255,255,.8)">✓ Certificate viewer</div></div></div>
+      <div class="fi rm-card" style="transition-delay:.15s"><div class="rm-head"><span class="rm-status" style="color:var(--gold)">BUILDING</span><span class="rm-date">Q3 2026</span></div><div class="rm-phase">Phase 2</div><div class="rm-title">Source Verification</div><div class="rm-items"><div class="rm-item" style="color:rgba(255,255,255,.45)">○ OTBIS API</div><div class="rm-item" style="color:rgba(255,255,255,.45)">○ Certifier cross-check</div><div class="rm-item" style="color:rgba(255,255,255,.45)">○ ePhyto Hub</div><div class="rm-item" style="color:rgba(255,255,255,.45)">○ EUDR DDS prep</div></div></div>
+      <div class="fi rm-card" style="transition-delay:.3s"><div class="rm-head"><span class="rm-status" style="color:rgba(255,255,255,.4)">PLANNED</span><span class="rm-date">2027</span></div><div class="rm-phase">Phase 3</div><div class="rm-title">AI &amp; Satellite</div><div class="rm-items"><div class="rm-item" style="color:rgba(255,255,255,.45)">○ AI format analysis</div><div class="rm-item" style="color:rgba(255,255,255,.45)">○ Satellite validation</div><div class="rm-item" style="color:rgba(255,255,255,.45)">○ Anomaly detection</div><div class="rm-item" style="color:rgba(255,255,255,.45)">○ Risk scoring</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="sec" id="faq" style="max-width:780px;margin:0 auto">
+  <div class="fi"><span class="tag tag-dark">FAQ</span></div>
+  <div class="fi"><h2>Tough questions, <em style="color:var(--emerald)">honest answers</em></h2></div>
+  <div style="margin-top:40px">
+    <div class="faq-item fi" onclick="this.querySelector('.faq-a').classList.toggle('open');this.querySelector('.arrow').classList.toggle('open')"><div class="faq-q"><span>Can AgroVeri+ detect fake certificates?</span><svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B5E3B" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a"><p>Phase 1: integrity. Phase 2: source verification via ECOCERT/IMO + OTBIS. Phase 3: AI format analysis.</p></div></div>
+    <div class="faq-item fi" onclick="this.querySelector('.faq-a').classList.toggle('open');this.querySelector('.arrow').classList.toggle('open')"><div class="faq-q"><span>What about garbage in, garbage out?</span><svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B5E3B" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a"><p>Phase 2 solves this — certification bodies upload directly, preventing fake documents from entering.</p></div></div>
+    <div class="faq-item fi" onclick="this.querySelector('.faq-a').classList.toggle('open');this.querySelector('.arrow').classList.toggle('open')"><div class="faq-q"><span>How does IPFS hashing work?</span><svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B5E3B" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a"><p>Cryptographic hash per document. One pixel change = different hash. Distributed and permanent.</p></div></div>
+    <div class="faq-item fi" onclick="this.querySelector('.faq-a').classList.toggle('open');this.querySelector('.arrow').classList.toggle('open')"><div class="faq-q"><span>What databases are cross-referenced?</span><svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B5E3B" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a"><p>OTBIS, IPPC ePhyto Hub (62+ countries), EU TRACES-NT, and certification registries.</p></div></div>
+    <div class="faq-item fi" onclick="this.querySelector('.faq-a').classList.toggle('open');this.querySelector('.arrow').classList.toggle('open')"><div class="faq-q"><span>Is AgroVeri+ EUDR-compliant?</span><svg class="arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1B5E3B" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></div><div class="faq-a"><p>Yes — plot-level geolocation, traceability, and DDS preparation for Dec 2026 / June 2027 deadlines.</p></div></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="cta-inner fi">
+    <span class="tag tag-light">Try It</span>
+    <h2>See it in action — <em>try the demo</em></h2>
+    <p>Upload a certificate, seal it with IPFS, generate a QR code — all in your browser.</p>
+    <a href="demo.html" class="btn-gold" style="font-size:16px;padding:14px 36px">Try the Demo →</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div style="display:flex;align-items:center;gap:9px;cursor:pointer">
+        <svg width="26" height="26" viewBox="0 0 48 48" fill="none"><path d="M24 4L8 11v10c0 11.5 6.8 18.7 16 23 9.2-4.3 16-11.5 16-23V11L24 4z" fill="rgba(255,255,255,.06)" stroke="#E8D48B" stroke-width="1.5"/><path d="M24 26c-3-1-7-1.5-9 1.5 2.5 3 6 3.5 9 1.5z" fill="#C9A84C" opacity=".7"/><path d="M20 32l3 3 5-6" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        <span style="font-family:'Instrument Serif',serif;font-size:17px;color:#fff">AgroVeri<span style="color:#C9A84C">+</span></span>
+      </div>
+      <p>Digital traceability for organic agriculture.</p>
+    </div>
+    <div class="footer-cols">
+      <div class="footer-col"><h5>Platform</h5><a href="#solution">Solution</a><a href="#defense">Defense</a><a href="#roadmap">Roadmap</a><a href="#faq">FAQ</a></div>
+      <div class="footer-col"><h5>Integrations</h5><span class="mono-item">OTBIS</span><span class="mono-item">ePhyto Hub</span><span class="mono-item">TRACES-NT</span><span class="mono-item">EUDR</span></div>
+      <div class="footer-col"><h5>Contact</h5><a href="demo.html" class="gold">Demo</a><span style="font-size:12px;color:rgba(255,255,255,.25)">Çorlu, Tekirdağ — Türkiye</span></div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 AgroVeri+</span>
+    <div style="display:flex;gap:10px;align-items:center"><span style="font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.08em">SUPPORTED BY</span><span style="font-weight:600;color:rgba(255,255,255,.3)">EIT Food</span></div>
+  </div>
+</footer>
+
+<script>
+// Navbar scroll effect
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// Fade-in on scroll
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.fi').forEach(el => obs.observe(el));
+
+// Animated counters
+const cobs = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting && !e.target.dataset.done) {
+      e.target.dataset.done = '1';
+      const end = parseInt(e.target.dataset.count);
+      const suffix = e.target.dataset.suffix || '+';
+      const t0 = Date.now();
+      const go = () => {
+        const p = Math.min((Date.now() - t0) / 2000, 1);
+        const v = Math.floor((1 - Math.pow(1 - p, 3)) * end);
+        e.target.textContent = v.toLocaleString() + suffix;
+        if (p < 1) requestAnimationFrame(go);
+      };
+      go();
+    }
+  });
+}, { threshold: 0.3 });
+document.querySelectorAll('.stat-num').forEach(el => cobs.observe(el));
+</script>
+</body>
+</html>
