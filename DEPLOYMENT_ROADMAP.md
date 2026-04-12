@@ -10,15 +10,16 @@
 
 | Bileşen | Durum | Not |
 |---------|-------|-----|
-| Frontend (HTML/CSS/JS) | Hazır | Statik site, build gerektirmiyor |
-| Backend (FastAPI) | Yok | Henüz geliştirilmedi |
-| Veritabanı | Yok | Tarayıcı belleğinde (sayfa yenilenince kaybolur) |
-| Kullanıcı Girişi | Yok | Kimlik doğrulama sistemi yok |
-| CI/CD | Yok | GitHub Actions vb. kurulmadı |
-| Docker | Yok | Konteyner yapılandırması yok |
-| Test | Yok | Test altyapısı yok |
-| Domain/SSL | Yok | Henüz alan adı alınmadı |
-| IPFS Entegrasyonu | Planlanmış | Kodda henüz aktif değil |
+| Frontend (HTML/CSS/JS) | ✅ Hazır | Backend API entegrasyonu + demo fallback |
+| Backend (FastAPI) | ✅ Hazır | Async, PostgreSQL, modüler mimari |
+| Veritabanı | ✅ Hazır | PostgreSQL + SQLAlchemy + Alembic |
+| Kullanıcı Girişi | ✅ Hazır | JWT (register/login/refresh), 4 rol |
+| CI/CD | ✅ Hazır | GitHub Actions (test + Docker build) |
+| Docker | ✅ Hazır | Frontend + Backend + PostgreSQL |
+| Test | ✅ Hazır | 35 test (auth, upload, verify, service) |
+| Domain/SSL | ⏳ Bekliyor | Henüz alan adı alınmadı |
+| IPFS Entegrasyonu | ⏳ Hazır | Pinata servisi yazıldı, API key ile aktif |
+| GitHub Pages Demo | ✅ Yayında | Jüri erişimi için |
 
 ---
 
