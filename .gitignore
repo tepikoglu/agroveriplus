@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+env/
+
+# Environment variables
+.env
+.env.local
+.env.production
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+dist/
+build/
+*.egg-info/
+
+# Logs
+*.log
+logs/
+
+# Docker
+docker-compose.override.yml
+
+# Database
+*.sqlite3
+*.db
+
+# Backups
+backups/
+
+# Certificates (uploaded by users - never commit)
+uploads/
+certificates/
