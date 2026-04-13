@@ -179,7 +179,8 @@ body{font-family:var(--sans);background:var(--off);color:var(--txt);min-height:1
         <div class="notif-list" id="notif-list"><div class="notif-empty">No notifications yet</div></div>
       </div>
     </div>
-    <button class="user-badge" id="user-badge" onclick="authLogout()"><div class="ub-avatar" id="ub-avatar">?</div><span class="ub-name" id="ub-name"></span></button>
+    <a href="dashboard.html" class="nav-link" id="dash-link" style="display:none;color:rgba(255,255,255,.6);text-decoration:none;font-size:12px;font-weight:500">Dashboard</a>
+    <button class="user-badge" id="user-badge" onclick="window.location.href='dashboard.html'"><div class="ub-avatar" id="ub-avatar">?</div><span class="ub-name" id="ub-name"></span></button>
     <button class="login-btn" id="login-btn" onclick="openAuth('login')">Sign In</button>
     <div class="nav-tabs">
       <button class="nav-tab active" onclick="showPage('farmer')" data-i18n="demo.farmer">Farmer</button>
@@ -376,6 +377,7 @@ function updateAuthUI(){
   document.getElementById('login-btn').style.display=logged?'none':'block';
   document.getElementById('user-badge').classList.toggle('show',logged);
   document.getElementById('notif-wrap').style.display=logged?'block':'none';
+  document.getElementById('dash-link').style.display=logged?'block':'none';
   if(logged){
     document.getElementById('ub-avatar').textContent=currentUser.name.charAt(0).toUpperCase();
     document.getElementById('ub-name').textContent=currentUser.name.split(' ')[0];

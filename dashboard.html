@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgroVeri+ Dashboard</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><path d='M24 4L8 11v10c0 11.5 6.8 18.7 16 23 9.2-4.3 16-11.5 16-23V11L24 4z' fill='%231B5E3B' stroke='%23C9A84C' stroke-width='2'/><path d='M20 32l3 3 5-6' stroke='white' stroke-width='2' fill='none' stroke-linecap='round'/></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--forest:#0A1F14;--deep:#0D2B1A;--emerald:#1B5E3B;--mint:#2D8B5E;--gold:#C9A84C;--goldL:#E8D48B;--cream:#F5F7F0;--off:#FAFBF7;--w:#FFF;--txt:#1A1D1B;--txtL:#6B7C72;--red:#B83230;--serif:'Instrument Serif',serif;--sans:'DM Sans',sans-serif;--mono:'IBM Plex Mono',monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--off);color:var(--txt);min-height:100vh}
+
+/* NAV */
+.nav{background:var(--forest);padding:0 clamp(16px,4vw,40px);height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.nav-brand{display:flex;align-items:center;gap:8px;text-decoration:none}
+.nav-brand span{font-family:var(--serif);font-size:18px;color:#fff}
+.nav-brand b{color:var(--gold);font-weight:400}
+.nav-right{display:flex;align-items:center;gap:14px}
+.nav-link{color:rgba(255,255,255,.6);text-decoration:none;font-size:13px;font-weight:500;transition:color .2s}
+.nav-link:hover{color:var(--gold)}
+.user-pill{display:flex;align-items:center;gap:8px;padding:5px 14px 5px 6px;background:rgba(255,255,255,.08);border-radius:10px}
+.user-avatar{width:28px;height:28px;border-radius:50%;background:var(--emerald);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
+.user-info{display:flex;flex-direction:column}
+.user-name{font-size:12px;font-weight:600;color:#fff}
+.user-role{font-size:10px;color:var(--gold);font-family:var(--mono);text-transform:uppercase;letter-spacing:.5px}
+
+/* LAYOUT */
+.dash{max-width:1100px;margin:0 auto;padding:28px clamp(16px,4vw,32px) 60px}
+.dash-header{margin-bottom:28px}
+.dash-header h1{font-family:var(--serif);font-size:28px;font-weight:400;color:var(--forest)}
+.dash-header p{font-size:14px;color:var(--txtL);margin-top:4px}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:32px}
+.stat-card{background:var(--w);border:1px solid #E8EBE5;border-radius:14px;padding:20px;text-align:center}
+.stat-val{font-family:var(--serif);font-size:32px;color:var(--forest)}
+.stat-lbl{font-size:12px;color:var(--txtL);margin-top:4px}
+
+/* SECTIONS */
+.section{margin-bottom:28px}
+.section-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.section-head h2{font-family:var(--serif);font-size:20px;font-weight:400;color:var(--forest)}
+.section-head a{font-size:13px;color:var(--emerald);text-decoration:none;font-weight:600}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+
+/* TABLE */
+.tbl{width:100%;background:var(--w);border:1px solid #E8EBE5;border-radius:14px;overflow:hidden}
+.tbl-row{display:grid;grid-template-columns:2fr 1.2fr 1fr .8fr;padding:12px 18px;border-bottom:1px solid #F0F2ED;font-size:13px;align-items:center}
+.tbl-row:last-child{border-bottom:none}
+.tbl-head{background:var(--cream);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--txtL)}
+.tbl-name{font-weight:600;word-break:break-all}
+.tbl-tag{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:500;padding:2px 8px;border-radius:5px}
+.tag-ok{background:rgba(27,94,59,.08);color:var(--emerald)}
+.tag-warn{background:rgba(201,168,76,.12);color:#8B7730}
+.tag-none{background:#F0F2ED;color:var(--txtL)}
+
+/* PARCEL CARD */
+.parcel-card{background:var(--w);border:1px solid #E8EBE5;border-radius:14px;padding:18px;display:flex;gap:14px;align-items:flex-start}
+.parcel-icon{width:42px;height:42px;border-radius:10px;background:rgba(27,94,59,.06);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px}
+.parcel-info h4{font-size:14px;font-weight:600;color:var(--txt);margin-bottom:3px}
+.parcel-info p{font-size:12px;color:var(--txtL);line-height:1.5}
+.parcel-meta{display:flex;gap:12px;margin-top:6px;font-size:11px;font-family:var(--mono)}
+
+/* NOTIF LIST */
+.notif-card{background:var(--w);border:1px solid #E8EBE5;border-radius:14px;overflow:hidden}
+.nc-item{padding:14px 18px;border-bottom:1px solid #F0F2ED;display:flex;gap:12px;align-items:flex-start}
+.nc-item:last-child{border-bottom:none}
+.nc-item.unread{background:rgba(27,94,59,.02);border-left:3px solid var(--emerald)}
+.nc-dot{width:8px;height:8px;border-radius:50%;background:var(--emerald);flex-shrink:0;margin-top:5px}
+.nc-dot.read{background:#D5D9D0}
+.nc-text h5{font-size:13px;font-weight:600;margin-bottom:2px}
+.nc-text p{font-size:12px;color:var(--txtL)}
+.nc-text span{font-size:10px;color:var(--txtL);opacity:.6;font-family:var(--mono)}
+
+/* EMPTY */
+.empty{text-align:center;padding:40px 20px;color:var(--txtL);font-size:14px}
+.empty-icon{font-size:36px;margin-bottom:10px;opacity:.5}
+
+/* LOADING */
+.loading{text-align:center;padding:40px;color:var(--txtL)}
+
+/* RESPONSIVE */
+@media(max-width:768px){.g2{grid-template-columns:1fr}.tbl-row{grid-template-columns:1.5fr 1fr 1fr}}
+@media(max-width:480px){.tbl-row{grid-template-columns:1fr;gap:4px}.tbl-head{display:none}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-brand">
+    <svg width="24" height="24" viewBox="0 0 48 48" fill="none"><path d="M24 4L8 11v10c0 11.5 6.8 18.7 16 23 9.2-4.3 16-11.5 16-23V11L24 4z" fill="rgba(255,255,255,.06)" stroke="#E8D48B" stroke-width="1.5"/><path d="M24 26c-3-1-7-1.5-9 1.5 2.5 3 6 3.5 9 1.5z" fill="#C9A84C" opacity=".7"/><path d="M20 32l3 3 5-6" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+    <span>AgroVeri<b>+</b></span>
+  </a>
+  <div class="nav-right">
+    <a href="demo.html" class="nav-link">Demo</a>
+    <a href="index.html" class="nav-link">Home</a>
+    <div class="user-pill">
+      <div class="user-avatar" id="d-avatar">?</div>
+      <div class="user-info">
+        <div class="user-name" id="d-name">—</div>
+        <div class="user-role" id="d-role">—</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="dash">
+  <div class="dash-header">
+    <h1 id="d-greeting">Dashboard</h1>
+    <p id="d-subtitle">Your certificates, parcels, and verification activity at a glance.</p>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-grid" id="stats-grid">
+    <div class="stat-card"><div class="stat-val" id="s-certs">—</div><div class="stat-lbl">My Certificates</div></div>
+    <div class="stat-card"><div class="stat-val" id="s-parcels">—</div><div class="stat-lbl">My Parcels</div></div>
+    <div class="stat-card"><div class="stat-val" id="s-verif">—</div><div class="stat-lbl">Total Verifications</div></div>
+    <div class="stat-card"><div class="stat-val" id="s-recent">—</div><div class="stat-lbl">This Week</div></div>
+  </div>
+
+  <div class="g2">
+    <!-- CERTIFICATES -->
+    <div class="section">
+      <div class="section-head"><h2>Certificates</h2><a href="demo.html">+ Upload</a></div>
+      <div id="cert-list"><div class="loading">Loading...</div></div>
+    </div>
+
+    <!-- PARCELS -->
+    <div class="section">
+      <div class="section-head"><h2>Parcels</h2></div>
+      <div id="parcel-list"><div class="loading">Loading...</div></div>
+    </div>
+  </div>
+
+  <!-- NOTIFICATIONS -->
+  <div class="section">
+    <div class="section-head"><h2>Recent Notifications</h2></div>
+    <div id="notif-list"><div class="loading">Loading...</div></div>
+  </div>
+</div>
+
+<script>
+const token=localStorage.getItem('agroveri-token');
+if(!token){window.location.href='demo.html';throw new Error('Not authenticated')}
+const H={'Authorization':'Bearer '+token,'Content-Type':'application/json'};
+
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function timeAgo(d){const s=Math.floor((Date.now()-new Date(d).getTime())/1000);if(s<60)return 'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago'}
+
+async function init(){
+  // Fetch user info
+  const me=await api('/api/auth/me');
+  if(!me){localStorage.removeItem('agroveri-token');window.location.href='demo.html';return}
+  document.getElementById('d-avatar').textContent=me.name.charAt(0).toUpperCase();
+  document.getElementById('d-name').textContent=me.name;
+  document.getElementById('d-role').textContent=me.role.replace('_',' ');
+  document.getElementById('d-greeting').textContent='Welcome, '+me.name.split(' ')[0];
+
+  // Fetch all data in parallel
+  const [stats,certs,parcels,notifs]=await Promise.all([
+    api('/api/dashboard/stats'),
+    api('/api/certificates/my'),
+    api('/api/parcels'),
+    api('/api/notifications'),
+  ]);
+
+  // Stats
+  if(stats){
+    document.getElementById('s-certs').textContent=stats.my_certificates;
+    document.getElementById('s-parcels').textContent=stats.my_parcels;
+    document.getElementById('s-verif').textContent=stats.total_verifications;
+    document.getElementById('s-recent').textContent=stats.recent_verifications;
+  }
+
+  // Certificates
+  const cl=document.getElementById('cert-list');
+  if(!certs||!certs.length){
+    cl.innerHTML='<div class="empty"><div class="empty-icon">📄</div>No certificates yet.<br><a href="demo.html" style="color:var(--emerald)">Upload your first certificate</a></div>';
+  }else{
+    let html='<div class="tbl"><div class="tbl-row tbl-head"><div>Document</div><div>Certifier</div><div>Product</div><div>Status</div></div>';
+    certs.forEach(c=>{
+      let status='<span class="tbl-tag tag-none">No metadata</span>';
+      if(c.certifier_name){
+        if(c.valid_until&&new Date(c.valid_until)<new Date())status='<span class="tbl-tag tag-warn">Expired</span>';
+        else status='<span class="tbl-tag tag-ok">Valid</span>';
+      }
+      html+='<div class="tbl-row"><div class="tbl-name">'+esc(c.original_filename)+'</div><div>'+(c.certifier_name?esc(c.certifier_name):'—')+'</div><div>'+(c.product_type?esc(c.product_type):'—')+'</div><div>'+status+'</div></div>';
+    });
+    html+='</div>';
+    cl.innerHTML=html;
+  }
+
+  // Parcels
+  const pl=document.getElementById('parcel-list');
+  if(!parcels||!parcels.length){
+    pl.innerHTML='<div class="empty"><div class="empty-icon">🌾</div>No parcels yet.</div>';
+  }else{
+    pl.innerHTML=parcels.map(p=>'<div class="parcel-card"><div class="parcel-icon">🌿</div><div class="parcel-info"><h4>'+esc(p.name)+'</h4><p>'+esc(p.crop_type)+' · '+(p.province?esc(p.province)+', ':'')+esc(p.country)+'</p><div class="parcel-meta"><span>'+p.area_hectares+' ha</span><span>'+p.location_lat.toFixed(2)+'°N '+p.location_lon.toFixed(2)+'°E</span>'+(p.commodity_code?'<span>HS '+esc(p.commodity_code)+'</span>':'')+'</div></div></div>').join('');
+  }
+
+  // Notifications
+  const nl=document.getElementById('notif-list');
+  if(!notifs||!notifs.length){
+    nl.innerHTML='<div class="empty"><div class="empty-icon">🔔</div>No notifications yet.</div>';
+  }else{
+    nl.innerHTML='<div class="notif-card">'+notifs.slice(0,10).map(n=>'<div class="nc-item'+(n.is_read?'':' unread')+'"><div class="nc-dot'+(n.is_read?' read':'')+'"></div><div class="nc-text"><h5>'+esc(n.title)+'</h5><p>'+esc(n.body)+'</p><span>'+timeAgo(n.created_at)+'</span></div></div>').join('')+'</div>';
+  }
+}
+
+async function api(url){
+  try{
+    const r=await fetch(url,{headers:H});
+    if(r.ok)return await r.json();
+    return null;
+  }catch(e){return null}
+}
+
+init();
+</script>
+<script src="i18n.js"></script>
+</body>
+</html>

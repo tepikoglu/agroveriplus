@@ -68,6 +68,7 @@ async def upload_certificate(
         original_filename=file.filename or "unknown",
         file_size=len(file_bytes),
         content_type=file.content_type or "application/octet-stream",
+        farmer_id=current_user.id if current_user else None,
     )
 
     if ipfs_cid:
@@ -88,6 +89,23 @@ async def upload_certificate(
         created_at=cert.created_at,
         qr_data=cert.sha256_hash,
     )
+
+
+@router.get("/my", response_model=list[CertificateDetail])
+async def my_certificates(
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+):
+    """List certificates uploaded by the current user."""
+    from sqlalchemy import select
+    from app.models.certificate import Certificate
+
+    result = await db.execute(
+        select(Certificate)
+        .where(Certificate.farmer_id == user.id)
+        .order_by(Certificate.created_at.desc())
+    )
+    return [CertificateDetail.model_validate(c) for c in result.scalars().all()]
 
 
 @router.post("/verify", response_model=VerifyResponse)
