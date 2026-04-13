@@ -114,6 +114,48 @@ body{font-family:var(--sans);background:var(--off);color:var(--txt);min-height:1
 #scanner-container{border-radius:12px;overflow:hidden;margin:16px 0}
 .input-hash{width:100%;padding:12px 16px;border:1.5px solid #E0E3DC;border-radius:10px;font-family:var(--mono);font-size:13px;background:var(--w);color:var(--txt);outline:none;transition:border-color .2s}
 .input-hash:focus{border-color:var(--emerald)}
+
+/* AUTH PANEL */
+.auth-overlay{position:fixed;inset:0;background:rgba(10,31,20,.6);z-index:200;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
+.auth-overlay.open{display:flex}
+.auth-card{background:var(--w);border-radius:20px;padding:36px 28px;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.2);position:relative}
+.auth-card h3{font-family:var(--serif);font-size:24px;color:var(--forest);margin-bottom:6px;font-weight:400}
+.auth-card p{font-size:13px;color:var(--txtL);margin-bottom:20px}
+.auth-close{position:absolute;top:16px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;color:var(--txtL);padding:4px}
+.auth-input{width:100%;padding:11px 14px;border:1.5px solid #E0E3DC;border-radius:10px;font-family:var(--sans);font-size:14px;background:var(--w);color:var(--txt);outline:none;margin-bottom:10px;transition:border-color .2s}
+.auth-input:focus{border-color:var(--emerald)}
+.auth-switch{font-size:13px;color:var(--txtL);text-align:center;margin-top:14px}
+.auth-switch a{color:var(--emerald);cursor:pointer;font-weight:600;text-decoration:none}
+.auth-err{font-size:12px;color:var(--red);margin-bottom:8px;display:none}
+
+/* NOTIFICATION BELL */
+.notif-wrap{position:relative}
+.notif-btn{background:none;border:none;cursor:pointer;padding:6px;position:relative;display:flex;align-items:center}
+.notif-btn svg{stroke:rgba(255,255,255,.6);transition:stroke .2s}
+.notif-btn:hover svg{stroke:var(--gold)}
+.notif-badge{position:absolute;top:0;right:0;min-width:16px;height:16px;background:var(--red);color:#fff;font-size:9px;font-weight:700;font-family:var(--sans);border-radius:8px;display:none;align-items:center;justify-content:center;padding:0 4px}
+.notif-badge.show{display:flex}
+.notif-drop{position:absolute;top:calc(100% + 8px);right:-8px;width:320px;background:var(--w);border-radius:14px;box-shadow:0 12px 40px rgba(0,0,0,.15);display:none;overflow:hidden;z-index:300}
+.notif-drop.open{display:block}
+.notif-header{padding:14px 16px;border-bottom:1px solid #E8EBE5;display:flex;justify-content:space-between;align-items:center}
+.notif-header h4{font-size:14px;font-weight:600;color:var(--forest)}
+.notif-list{max-height:300px;overflow-y:auto}
+.notif-item{padding:12px 16px;border-bottom:1px solid #F0F2ED;cursor:pointer;transition:background .15s}
+.notif-item:hover{background:var(--cream)}
+.notif-item.unread{background:rgba(27,94,59,.03);border-left:3px solid var(--emerald)}
+.notif-item .ni-title{font-size:13px;font-weight:600;color:var(--txt);margin-bottom:2px}
+.notif-item .ni-body{font-size:12px;color:var(--txtL);line-height:1.5}
+.notif-item .ni-time{font-size:10px;color:var(--txtL);opacity:.6;margin-top:4px;font-family:var(--mono)}
+.notif-empty{padding:30px 16px;text-align:center;color:var(--txtL);font-size:13px}
+
+/* USER BADGE */
+.user-badge{display:none;align-items:center;gap:6px;padding:4px 12px 4px 8px;background:rgba(255,255,255,.08);border-radius:8px;cursor:pointer;border:none;transition:background .2s}
+.user-badge:hover{background:rgba(255,255,255,.15)}
+.user-badge .ub-avatar{width:24px;height:24px;border-radius:50%;background:var(--emerald);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;font-family:var(--sans)}
+.user-badge .ub-name{font-size:12px;font-weight:500;color:rgba(255,255,255,.7);font-family:var(--sans)}
+.user-badge.show{display:flex}
+.login-btn{background:rgba(255,255,255,.08);border:none;padding:5px 14px;border-radius:7px;font-size:12px;font-weight:600;color:rgba(255,255,255,.6);font-family:var(--sans);cursor:pointer;transition:all .2s}
+.login-btn:hover{background:rgba(255,255,255,.15);color:#fff}
 </style>
 </head>
 <body>
@@ -127,6 +169,18 @@ body{font-family:var(--sans);background:var(--off);color:var(--txt);min-height:1
     <span id="mode-badge" style="font-family:var(--mono);font-size:10px;font-weight:600;padding:3px 10px;border-radius:6px;background:rgba(201,168,76,.15);color:#C9A84C">Demo Mode</span>
     <a href="index.html" class="nav-back" data-i18n="demo.back">← Back to site</a>
     <div style="display:flex;gap:2px;margin:0 4px"><button class="lang-btn active" data-lang="en" onclick="setLang('en')" style="font-family:var(--mono);font-size:10px;font-weight:600;padding:3px 8px;border-radius:5px;border:none;cursor:pointer;background:rgba(255,255,255,.12);color:var(--gold)">EN</button><button class="lang-btn" data-lang="tr" onclick="setLang('tr')" style="font-family:var(--mono);font-size:10px;font-weight:600;padding:3px 8px;border-radius:5px;border:none;cursor:pointer;background:transparent;color:rgba(255,255,255,.4)">TR</button></div>
+    <div class="notif-wrap" id="notif-wrap" style="display:none">
+      <button class="notif-btn" onclick="toggleNotifDrop()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="1.8"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        <span class="notif-badge" id="notif-badge">0</span>
+      </button>
+      <div class="notif-drop" id="notif-drop">
+        <div class="notif-header"><h4>Notifications</h4><button onclick="toggleNotifDrop()" style="background:none;border:none;cursor:pointer;font-size:16px;color:var(--txtL)">✕</button></div>
+        <div class="notif-list" id="notif-list"><div class="notif-empty">No notifications yet</div></div>
+      </div>
+    </div>
+    <button class="user-badge" id="user-badge" onclick="authLogout()"><div class="ub-avatar" id="ub-avatar">?</div><span class="ub-name" id="ub-name"></span></button>
+    <button class="login-btn" id="login-btn" onclick="openAuth('login')">Sign In</button>
     <div class="nav-tabs">
       <button class="nav-tab active" onclick="showPage('farmer')" data-i18n="demo.farmer">Farmer</button>
       <button class="nav-tab" onclick="showPage('consumer')" data-i18n="demo.consumer">Consumer</button>
@@ -215,10 +269,173 @@ body{font-family:var(--sans);background:var(--off);color:var(--txt);min-height:1
 
 <div class="toast" id="toast"></div>
 
+<!-- Auth Overlay -->
+<div class="auth-overlay" id="auth-overlay" onclick="if(event.target===this)closeAuth()">
+  <div class="auth-card">
+    <button class="auth-close" onclick="closeAuth()">✕</button>
+    <div id="auth-login">
+      <h3>Sign In</h3>
+      <p>Sign in to track your certificates and receive notifications.</p>
+      <div class="auth-err" id="login-err"></div>
+      <input class="auth-input" id="login-email" type="email" placeholder="Email">
+      <input class="auth-input" id="login-pass" type="password" placeholder="Password">
+      <button class="btn btn-primary" onclick="authLogin()" style="width:100%">Sign In</button>
+      <div class="auth-switch">Don't have an account? <a onclick="showAuthMode('register')">Register</a></div>
+    </div>
+    <div id="auth-register" style="display:none">
+      <h3>Create Account</h3>
+      <p>Register to upload certificates and manage your parcels.</p>
+      <div class="auth-err" id="reg-err"></div>
+      <input class="auth-input" id="reg-name" type="text" placeholder="Full Name">
+      <input class="auth-input" id="reg-email" type="email" placeholder="Email">
+      <input class="auth-input" id="reg-phone" type="tel" placeholder="Phone (optional)">
+      <input class="auth-input" id="reg-pass" type="password" placeholder="Password (min 8 chars)">
+      <select class="auth-input" id="reg-role" style="color:var(--txtL)">
+        <option value="farmer">Farmer</option>
+        <option value="cooperative_admin">Cooperative Admin</option>
+        <option value="agronomist">Agronomist</option>
+        <option value="analyst">Analyst</option>
+      </select>
+      <button class="btn btn-primary" onclick="authRegister()" style="width:100%">Create Account</button>
+      <div class="auth-switch">Already have an account? <a onclick="showAuthMode('login')">Sign In</a></div>
+    </div>
+  </div>
+</div>
+
 <script>
 let hash='',file=null,db={},sc=null,scOn=false;
 let apiOnline=false;
+let authToken=null,currentUser=null,notifInterval=null;
 const API_BASE='/api/certificates';
+
+// ─── Auth ──────────────────────────────────────────
+function openAuth(mode){document.getElementById('auth-overlay').classList.add('open');showAuthMode(mode||'login')}
+function closeAuth(){document.getElementById('auth-overlay').classList.remove('open')}
+function showAuthMode(m){document.getElementById('auth-login').style.display=m==='login'?'block':'none';document.getElementById('auth-register').style.display=m==='register'?'block':'none';document.querySelectorAll('.auth-err').forEach(e=>{e.style.display='none'})}
+
+async function authLogin(){
+  const email=document.getElementById('login-email').value.trim();
+  const pass=document.getElementById('login-pass').value;
+  if(!email||!pass)return showAuthErr('login-err','Enter email and password');
+  try{
+    const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});
+    if(!r.ok){const d=await r.json();return showAuthErr('login-err',d.detail||'Login failed')}
+    const data=await r.json();
+    setAuth(data.access_token,data.refresh_token);
+    closeAuth();toast('Signed in successfully');
+  }catch(e){showAuthErr('login-err','Connection error')}
+}
+
+async function authRegister(){
+  const name=document.getElementById('reg-name').value.trim();
+  const email=document.getElementById('reg-email').value.trim();
+  const phone=document.getElementById('reg-phone').value.trim()||null;
+  const pass=document.getElementById('reg-pass').value;
+  const role=document.getElementById('reg-role').value;
+  if(!name||!email||!pass)return showAuthErr('reg-err','Fill in required fields');
+  try{
+    const r=await fetch('/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,phone,password:pass,role})});
+    if(!r.ok){const d=await r.json();return showAuthErr('reg-err',d.detail||'Registration failed')}
+    // Auto-login
+    const r2=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password:pass})});
+    const data=await r2.json();
+    setAuth(data.access_token,data.refresh_token);
+    closeAuth();toast('Account created');
+  }catch(e){showAuthErr('reg-err','Connection error')}
+}
+
+function authLogout(){
+  localStorage.removeItem('agroveri-token');localStorage.removeItem('agroveri-refresh');
+  authToken=null;currentUser=null;
+  if(notifInterval)clearInterval(notifInterval);
+  updateAuthUI();toast('Signed out');
+}
+
+function showAuthErr(id,msg){const el=document.getElementById(id);el.textContent=msg;el.style.display='block'}
+
+async function setAuth(access,refresh){
+  authToken=access;
+  localStorage.setItem('agroveri-token',access);
+  if(refresh)localStorage.setItem('agroveri-refresh',refresh);
+  await fetchMe();
+  updateAuthUI();
+  startNotifPolling();
+}
+
+async function fetchMe(){
+  if(!authToken)return;
+  try{
+    const r=await fetch('/api/auth/me',{headers:{'Authorization':'Bearer '+authToken}});
+    if(r.ok)currentUser=await r.json();
+    else{authToken=null;localStorage.removeItem('agroveri-token')}
+  }catch(e){/* offline */}
+}
+
+function updateAuthUI(){
+  const logged=!!currentUser;
+  document.getElementById('login-btn').style.display=logged?'none':'block';
+  document.getElementById('user-badge').classList.toggle('show',logged);
+  document.getElementById('notif-wrap').style.display=logged?'block':'none';
+  if(logged){
+    document.getElementById('ub-avatar').textContent=currentUser.name.charAt(0).toUpperCase();
+    document.getElementById('ub-name').textContent=currentUser.name.split(' ')[0];
+  }
+}
+
+// ─── Notifications ──────────────────────────────────
+function toggleNotifDrop(){document.getElementById('notif-drop').classList.toggle('open')}
+
+async function fetchNotifications(){
+  if(!authToken||!apiOnline)return;
+  try{
+    const r=await fetch('/api/notifications',{headers:{'Authorization':'Bearer '+authToken}});
+    if(!r.ok)return;
+    const items=await r.json();
+    renderNotifications(items);
+    const unread=items.filter(n=>!n.is_read).length;
+    const badge=document.getElementById('notif-badge');
+    badge.textContent=unread;
+    badge.classList.toggle('show',unread>0);
+  }catch(e){/* offline */}
+}
+
+function renderNotifications(items){
+  const list=document.getElementById('notif-list');
+  if(!items.length){list.innerHTML='<div class="notif-empty">No notifications yet</div>';return}
+  list.innerHTML=items.slice(0,20).map(n=>{
+    const ago=timeAgo(new Date(n.created_at));
+    return '<div class="notif-item'+(n.is_read?'':' unread')+'" onclick="markRead(\''+n.id+'\',this)"><div class="ni-title">'+esc(n.title)+'</div><div class="ni-body">'+esc(n.body)+'</div><div class="ni-time">'+ago+'</div></div>';
+  }).join('');
+}
+
+async function markRead(id,el){
+  if(!authToken)return;
+  await fetch('/api/notifications/'+id+'/read',{method:'POST',headers:{'Authorization':'Bearer '+authToken}});
+  el.classList.remove('unread');
+  const badge=document.getElementById('notif-badge');
+  const c=parseInt(badge.textContent)-1;
+  badge.textContent=Math.max(0,c);
+  if(c<=1)badge.classList.remove('show');
+}
+
+function startNotifPolling(){
+  fetchNotifications();
+  if(notifInterval)clearInterval(notifInterval);
+  notifInterval=setInterval(fetchNotifications,15000);
+}
+
+function timeAgo(d){
+  const s=Math.floor((Date.now()-d.getTime())/1000);
+  if(s<60)return 'just now';
+  if(s<3600)return Math.floor(s/60)+'m ago';
+  if(s<86400)return Math.floor(s/3600)+'h ago';
+  return Math.floor(s/86400)+'d ago';
+}
+
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+
+// Close notif dropdown on outside click
+document.addEventListener('click',e=>{if(!e.target.closest('.notif-wrap'))document.getElementById('notif-drop')?.classList.remove('open')});
 
 // Detect backend availability on load
 async function checkAPI(){
@@ -282,12 +499,14 @@ async function handleFile(f){
     try{
       const fd=new FormData();
       fd.append('file',f);
-      const res=await fetch(API_BASE+'/upload',{method:'POST',body:fd});
+      const hdrs=authToken?{'Authorization':'Bearer '+authToken}:{};
+      const res=await fetch(API_BASE+'/upload',{method:'POST',body:fd,headers:hdrs});
       if(res.ok){
         const data=await res.json();
         hash=data.sha256_hash;
         db[hash]={name:data.original_filename,size:data.file_size,date:data.created_at,disp:new Date(data.created_at).toLocaleDateString('en-US',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit'}),ipfs_cid:data.ipfs_cid,id:data.id};
         if(data.ipfs_cid)toast('Pinned to IPFS: '+data.ipfs_cid.substring(0,12)+'...');
+        if(authToken)setTimeout(fetchNotifications,1000);
       }
     }catch(e){
       console.warn('API upload failed, using local hash',e);
@@ -429,7 +648,12 @@ function resetC(){
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
 
 // Init
-checkAPI();
+(async()=>{
+  await checkAPI();
+  updateAuthUI();
+  const saved=localStorage.getItem('agroveri-token');
+  if(saved&&apiOnline){authToken=saved;await fetchMe();updateAuthUI();if(currentUser)startNotifPolling()}
+})();
 </script>
 <script src="i18n.js"></script>
 </body>
