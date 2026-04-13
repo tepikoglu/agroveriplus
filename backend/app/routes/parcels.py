@@ -104,6 +104,21 @@ async def eudr_summary(
     }
 
 
+@router.get("/{parcel_id}/dds-export")
+async def dds_export(
+    parcel_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+):
+    """Generate full EUDR Due Diligence Statement (JSON export)."""
+    from app.services.eudr import generate_dds
+
+    dds = await generate_dds(db, parcel_id, user.id)
+    if not dds:
+        raise HTTPException(404, "Parcel not found")
+    return dds
+
+
 async def _get_user_parcel(db: AsyncSession, parcel_id: UUID, user_id: UUID) -> Parcel:
     result = await db.execute(
         select(Parcel).where(

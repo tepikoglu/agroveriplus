@@ -28,7 +28,7 @@ async def test_external_check_ecocert_valid(client):
     r = await client.get(f"/api/certificates/{cert_id}/external-check")
     assert r.status_code == 200
     data = r.json()
-    assert len(data["checks"]) == 3
+    assert len(data["checks"]) == 4
     # OTBIS should find TR-BIO prefix
     otbis = next(c for c in data["checks"] if c["provider"] == "OTBIS")
     assert otbis["status"] == "valid"

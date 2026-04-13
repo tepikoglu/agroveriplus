@@ -26,6 +26,10 @@ class Settings(BaseSettings):
     # CORS
     cors_origins: list[str] = ["http://localhost:8080", "http://localhost:3000"]
 
+    # External Registries (optional — leave empty for mock mode)
+    otbis_api_url: str = ""
+    ecocert_api_url: str = ""
+
     model_config = {"env_file": ".env", "extra": "ignore"}
 
 
