@@ -1,3 +1,5 @@
+import logging
+
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -5,12 +7,15 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import settings
 from app.database import engine, Base
+from app.middleware import RateLimitMiddleware, RequestLoggingMiddleware
 from app.routes.auth import router as auth_router
 from app.routes.certificates import router as certificates_router
 from app.routes.dashboard import router as dashboard_router
 from app.routes.health import router as health_router
 from app.routes.notifications import router as notifications_router
 from app.routes.parcels import router as parcels_router
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
 
 
 @asynccontextmanager
@@ -29,6 +34,8 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+app.add_middleware(RequestLoggingMiddleware)
+app.add_middleware(RateLimitMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
