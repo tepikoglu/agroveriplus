@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AgroVeri+ Admin</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'><path d='M24 4L8 11v10c0 11.5 6.8 18.7 16 23 9.2-4.3 16-11.5 16-23V11L24 4z' fill='%231B5E3B' stroke='%23C9A84C' stroke-width='2'/><path d='M20 32l3 3 5-6' stroke='white' stroke-width='2' fill='none' stroke-linecap='round'/></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--forest:#0A1F14;--deep:#0D2B1A;--emerald:#1B5E3B;--mint:#2D8B5E;--gold:#C9A84C;--goldL:#E8D48B;--cream:#F5F7F0;--off:#FAFBF7;--w:#FFF;--txt:#1A1D1B;--txtL:#6B7C72;--red:#B83230;--serif:'Instrument Serif',serif;--sans:'DM Sans',sans-serif;--mono:'IBM Plex Mono',monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);background:var(--off);color:var(--txt);min-height:100vh}
+.nav{background:var(--forest);padding:0 clamp(16px,4vw,40px);height:64px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.nav-brand{display:flex;align-items:center;gap:8px;text-decoration:none}
+.nav-brand span{font-family:var(--serif);font-size:18px;color:#fff}
+.nav-brand b{color:var(--gold)}
+.nav-right{display:flex;align-items:center;gap:14px}
+.nav-link{color:rgba(255,255,255,.6);text-decoration:none;font-size:13px;font-weight:500}
+.admin-badge{font-family:var(--mono);font-size:10px;font-weight:600;padding:3px 10px;border-radius:6px;background:rgba(184,50,48,.15);color:var(--red)}
+.dash{max-width:1200px;margin:0 auto;padding:28px clamp(16px,4vw,32px) 60px}
+.dash h1{font-family:var(--serif);font-size:28px;font-weight:400;color:var(--forest);margin-bottom:6px}
+.dash>p{font-size:14px;color:var(--txtL);margin-bottom:28px}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:32px}
+.stat-card{background:var(--w);border:1px solid #E8EBE5;border-radius:14px;padding:20px;text-align:center}
+.stat-val{font-family:var(--serif);font-size:32px;color:var(--forest)}
+.stat-lbl{font-size:12px;color:var(--txtL);margin-top:4px}
+.section{margin-bottom:28px}
+.section h2{font-family:var(--serif);font-size:20px;font-weight:400;color:var(--forest);margin-bottom:14px}
+.tbl{width:100%;background:var(--w);border:1px solid #E8EBE5;border-radius:14px;overflow:hidden}
+.tbl-row{display:grid;padding:12px 18px;border-bottom:1px solid #F0F2ED;font-size:13px;align-items:center}
+.tbl-row:last-child{border-bottom:none}
+.tbl-head{background:var(--cream);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--txtL)}
+.users-row{grid-template-columns:2fr 1.5fr 1fr .8fr 1fr}
+.certs-row{grid-template-columns:2fr 1.5fr 1.5fr 2fr}
+.tag{display:inline-block;font-family:var(--mono);font-size:10px;font-weight:500;padding:2px 8px;border-radius:5px}
+.tag-ok{background:rgba(27,94,59,.08);color:var(--emerald)}
+.tag-warn{background:rgba(201,168,76,.12);color:#8B7730}
+.tag-red{background:rgba(184,50,48,.08);color:var(--red)}
+.tag-blue{background:rgba(59,130,246,.08);color:#2563EB}
+.role-pills{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.role-pill{font-family:var(--mono);font-size:11px;padding:4px 12px;border-radius:8px;background:var(--w);border:1px solid #E8EBE5}
+.role-pill b{font-weight:700;margin-right:4px}
+.btn-sm{padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;font-family:var(--sans);cursor:pointer;border:none;transition:all .15s}
+.btn-deact{background:rgba(184,50,48,.08);color:var(--red)}
+.btn-deact:hover{background:rgba(184,50,48,.15)}
+.btn-act{background:rgba(27,94,59,.08);color:var(--emerald)}
+.btn-act:hover{background:rgba(27,94,59,.15)}
+.check-bar{display:flex;gap:8px;margin-bottom:18px}
+.check-box{flex:1;background:var(--w);border:1px solid #E8EBE5;border-radius:10px;padding:14px;text-align:center}
+.check-box .cv{font-family:var(--serif);font-size:24px}
+.check-box .cl{font-size:11px;color:var(--txtL);margin-top:2px}
+.empty{text-align:center;padding:40px;color:var(--txtL)}
+@media(max-width:768px){.users-row{grid-template-columns:1.5fr 1fr 1fr}.certs-row{grid-template-columns:1fr 1fr 1fr}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="index.html" class="nav-brand">
+    <svg width="24" height="24" viewBox="0 0 48 48" fill="none"><path d="M24 4L8 11v10c0 11.5 6.8 18.7 16 23 9.2-4.3 16-11.5 16-23V11L24 4z" fill="rgba(255,255,255,.06)" stroke="#E8D48B" stroke-width="1.5"/><path d="M24 26c-3-1-7-1.5-9 1.5 2.5 3 6 3.5 9 1.5z" fill="#C9A84C" opacity=".7"/><path d="M20 32l3 3 5-6" stroke="#C9A84C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+    <span>AgroVeri<b>+</b></span>
+  </a>
+  <div class="nav-right">
+    <span class="admin-badge">ADMIN</span>
+    <a href="dashboard.html" class="nav-link">Dashboard</a>
+    <a href="demo.html" class="nav-link">Demo</a>
+  </div>
+</nav>
+
+<div class="dash">
+  <h1>Admin Panel</h1>
+  <p>System-wide overview, user management, and certificate monitoring.</p>
+
+  <!-- STATS -->
+  <div class="stats-grid" id="stats-grid">
+    <div class="stat-card"><div class="stat-val" id="s-users">—</div><div class="stat-lbl">Users</div></div>
+    <div class="stat-card"><div class="stat-val" id="s-active">—</div><div class="stat-lbl">Active</div></div>
+    <div class="stat-card"><div class="stat-val" id="s-certs">—</div><div class="stat-lbl">Certificates</div></div>
+    <div class="stat-card"><div class="stat-val" id="s-parcels">—</div><div class="stat-lbl">Parcels</div></div>
+    <div class="stat-card"><div class="stat-val" id="s-verif">—</div><div class="stat-lbl">Verifications</div></div>
+    <div class="stat-card"><div class="stat-val" id="s-checks">—</div><div class="stat-lbl">Ext. Checks</div></div>
+  </div>
+
+  <!-- ROLE BREAKDOWN -->
+  <div class="section">
+    <h2>Users by Role</h2>
+    <div class="role-pills" id="role-pills"></div>
+  </div>
+
+  <!-- EXT CHECK STATUS -->
+  <div class="section">
+    <h2>External Check Status</h2>
+    <div class="check-bar" id="check-bar"></div>
+  </div>
+
+  <!-- USERS TABLE -->
+  <div class="section">
+    <h2>User Management</h2>
+    <div id="users-table"><div class="empty">Loading...</div></div>
+  </div>
+
+  <!-- CERTS TABLE -->
+  <div class="section">
+    <h2>Recent Certificates</h2>
+    <div id="certs-table"><div class="empty">Loading...</div></div>
+  </div>
+</div>
+
+<script>
+const token=localStorage.getItem('agroveri-token');
+if(!token){window.location.href='demo.html';throw new Error('No auth')}
+const H={'Authorization':'Bearer '+token,'Content-Type':'application/json'};
+
+function esc(s){if(!s)return '—';const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function roleTag(r){
+  const m={admin:'tag-red',farmer:'tag-ok',cooperative_admin:'tag-blue',agronomist:'tag-warn',analyst:'tag-warn'};
+  return '<span class="tag '+(m[r]||'tag-ok')+'">'+r.replace('_',' ')+'</span>';
+}
+
+async function api(url,opt){
+  try{const r=await fetch(url,{headers:H,...(opt||{})});if(r.ok)return await r.json();if(r.status===403){alert('Admin access required');window.location.href='dashboard.html'}return null}catch(e){return null}
+}
+
+async function init(){
+  const [stats,users,certs]=await Promise.all([
+    api('/api/admin/stats'),
+    api('/api/admin/users'),
+    api('/api/admin/certificates'),
+  ]);
+
+  if(!stats)return;
+
+  // Stats
+  document.getElementById('s-users').textContent=stats.users.total;
+  document.getElementById('s-active').textContent=stats.users.active;
+  document.getElementById('s-certs').textContent=stats.certificates.total;
+  document.getElementById('s-parcels').textContent=stats.parcels.total;
+  document.getElementById('s-verif').textContent=stats.verifications.total;
+  document.getElementById('s-checks').textContent=stats.external_checks.total;
+
+  // Role pills
+  const rp=document.getElementById('role-pills');
+  rp.innerHTML=Object.entries(stats.users.by_role).map(([r,c])=>'<div class="role-pill"><b>'+c+'</b>'+r.replace('_',' ')+'</div>').join('');
+
+  // Ext check status
+  const cb=document.getElementById('check-bar');
+  const st=stats.external_checks.by_status;
+  if(Object.keys(st).length){
+    cb.innerHTML=Object.entries(st).map(([s,c])=>{
+      const cls=s==='valid'?'tag-ok':s==='not_found'?'tag-warn':'tag-red';
+      return '<div class="check-box"><div class="cv" style="color:var(--'+(s==='valid'?'emerald':s==='not_found'?'gold':'red')+')">'+c+'</div><div class="cl">'+s.replace('_',' ')+'</div></div>';
+    }).join('');
+  }else{cb.innerHTML='<div class="empty">No external checks yet</div>'}
+
+  // Users table
+  if(users&&users.length){
+    let html='<div class="tbl"><div class="tbl-row tbl-head users-row"><div>Name</div><div>Email</div><div>Role</div><div>Status</div><div>Action</div></div>';
+    users.forEach(u=>{
+      const active=u.is_active;
+      html+='<div class="tbl-row users-row"><div style="font-weight:600">'+esc(u.name)+'</div><div style="font-size:12px;color:var(--txtL)">'+esc(u.email)+'</div><div>'+roleTag(u.role)+'</div><div>'+(active?'<span class="tag tag-ok">Active</span>':'<span class="tag tag-red">Inactive</span>')+'</div><div>'+(active?'<button class="btn-sm btn-deact" onclick="toggleUser(\''+u.id+'\',false)">Deactivate</button>':'<button class="btn-sm btn-act" onclick="toggleUser(\''+u.id+'\',true)">Activate</button>')+'</div></div>';
+    });
+    html+='</div>';
+    document.getElementById('users-table').innerHTML=html;
+  }
+
+  // Certs table
+  if(certs&&certs.length){
+    let html='<div class="tbl"><div class="tbl-row tbl-head certs-row"><div>Filename</div><div>Certifier</div><div>Product</div><div>Hash</div></div>';
+    certs.forEach(c=>{
+      html+='<div class="tbl-row certs-row"><div style="font-weight:600">'+esc(c.filename)+'</div><div>'+esc(c.certifier)+'</div><div>'+esc(c.product)+'</div><div style="font-family:var(--mono);font-size:11px;color:var(--txtL)">'+esc(c.sha256)+'</div></div>';
+    });
+    html+='</div>';
+    document.getElementById('certs-table').innerHTML=html;
+  }else{
+    document.getElementById('certs-table').innerHTML='<div class="empty">No certificates yet</div>';
+  }
+}
+
+async function toggleUser(id,activate){
+  const endpoint=activate?'activate':'deactivate';
+  await api('/api/admin/users/'+id+'/'+endpoint,{method:'PUT'});
+  init();
+}
+
+init();
+</script>
+</body>
+</html>

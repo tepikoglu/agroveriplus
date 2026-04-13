@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.database import engine, Base
 from app.middleware import RateLimitMiddleware, RequestLoggingMiddleware
+from app.routes.admin import router as admin_router
 from app.routes.auth import router as auth_router
 from app.routes.certificates import router as certificates_router
 from app.routes.dashboard import router as dashboard_router
@@ -50,3 +51,4 @@ app.include_router(certificates_router, prefix="/api/certificates", tags=["certi
 app.include_router(parcels_router, prefix="/api/parcels", tags=["parcels"])
 app.include_router(notifications_router, prefix="/api/notifications", tags=["notifications"])
 app.include_router(dashboard_router, prefix="/api/dashboard", tags=["dashboard"])
+app.include_router(admin_router, prefix="/api/admin", tags=["admin"])

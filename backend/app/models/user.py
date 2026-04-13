@@ -14,6 +14,7 @@ class UserRole(str, PyEnum):
     agronomist = "agronomist"
     cooperative_admin = "cooperative_admin"
     analyst = "analyst"
+    admin = "admin"
 
 
 class User(Base):
