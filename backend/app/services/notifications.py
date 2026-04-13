@@ -1,8 +1,6 @@
-"""Notification service — logs events to DB.
+"""Notification service — logs events to DB + sends email when configured."""
 
-Future: add email, push, and webhook delivery channels.
-"""
-
+import logging
 from enum import Enum as PyEnum
 from uuid import UUID
 
@@ -10,6 +8,8 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.notification import Notification
+
+logger = logging.getLogger("agroveri.notifications")
 
 
 class NotificationEvent(str, PyEnum):
@@ -65,6 +65,17 @@ async def notify(
     db.add(n)
     await db.commit()
     await db.refresh(n)
+
+    # Send email (non-blocking — failure doesn't affect notification)
+    try:
+        from app.services.email import send_notification_email
+        from app.services.auth_service import get_user_by_id
+        user = await get_user_by_id(db, user_id)
+        if user and user.email:
+            await send_notification_email(user.email, title, body)
+    except Exception as e:
+        logger.warning(f"Email delivery failed for notification {n.id}: {e}")
+
     return n
 
 

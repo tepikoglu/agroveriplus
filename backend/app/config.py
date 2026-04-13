@@ -29,6 +29,14 @@ class Settings(BaseSettings):
     # Google OAuth (optional — leave empty to disable)
     google_client_id: str = ""
 
+    # Email / SMTP (optional — leave empty to skip email delivery)
+    smtp_host: str = ""
+    smtp_port: int = 587
+    smtp_user: str = ""
+    smtp_password: str = ""
+    smtp_from_name: str = "AgroVeri+"
+    smtp_from_email: str = ""
+
     # External Registries (optional — leave empty for mock mode)
     otbis_api_url: str = ""
     ecocert_api_url: str = ""
