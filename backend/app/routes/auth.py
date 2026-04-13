@@ -5,6 +5,7 @@ from app.database import get_db
 from app.deps import get_current_user
 from app.models.user import User, UserRole
 from app.schemas import (
+    GoogleAuthRequest,
     LoginRequest,
     RefreshRequest,
     RegisterRequest,
@@ -80,6 +81,50 @@ async def refresh(body: RefreshRequest, db: AsyncSession = Depends(get_db)):
     user = await get_user_by_id(db, payload["sub"])
     if not user or not user.is_active:
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "User not found or deactivated")
+
+    return TokenResponse(
+        access_token=create_token(str(user.id), user.role.value, "access"),
+        refresh_token=create_token(str(user.id), user.role.value, "refresh"),
+    )
+
+
+@router.post("/google", response_model=TokenResponse)
+async def google_auth(body: GoogleAuthRequest, db: AsyncSession = Depends(get_db)):
+    """Authenticate via Google Sign-In. Auto-registers new users."""
+    from app.services.oauth import GoogleAuthError, verify_google_token
+
+    if body.role not in VALID_ROLES:
+        raise HTTPException(400, f"Invalid role. Choose from: {sorted(VALID_ROLES)}")
+
+    try:
+        google_user = await verify_google_token(body.id_token)
+    except GoogleAuthError as e:
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, str(e))
+
+    # Check if user exists
+    user = await get_user_by_email(db, google_user["email"])
+
+    if user:
+        # Existing user — link OAuth if not already
+        if not user.oauth_provider:
+            user.oauth_provider = "google"
+            user.oauth_id = google_user["sub"]
+            await db.commit()
+    else:
+        # Auto-register
+        user = await create_user(
+            db,
+            email=google_user["email"],
+            password="oauth-no-password",
+            name=google_user["name"],
+            role=body.role,
+        )
+        user.oauth_provider = "google"
+        user.oauth_id = google_user["sub"]
+        await db.commit()
+
+    if not user.is_active:
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Account is deactivated")
 
     return TokenResponse(
         access_token=create_token(str(user.id), user.role.value, "access"),

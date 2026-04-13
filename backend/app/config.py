@@ -26,6 +26,9 @@ class Settings(BaseSettings):
     # CORS
     cors_origins: list[str] = ["http://localhost:8080", "http://localhost:3000"]
 
+    # Google OAuth (optional — leave empty to disable)
+    google_client_id: str = ""
+
     # External Registries (optional — leave empty for mock mode)
     otbis_api_url: str = ""
     ecocert_api_url: str = ""

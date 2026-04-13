@@ -28,6 +28,6 @@ class User(Base):
     is_active: Mapped[bool] = mapped_column(default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
-    # Future: OAuth provider fields
-    # oauth_provider: Mapped[str | None] = mapped_column(String(50))
-    # oauth_id: Mapped[str | None] = mapped_column(String(255))
+    # OAuth
+    oauth_provider: Mapped[str | None] = mapped_column(String(50), default=None)
+    oauth_id: Mapped[str | None] = mapped_column(String(255), default=None)

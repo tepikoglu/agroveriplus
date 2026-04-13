@@ -19,6 +19,11 @@ class LoginRequest(BaseModel):
     password: str
 
 
+class GoogleAuthRequest(BaseModel):
+    id_token: str
+    role: str = "farmer"
+
+
 class RefreshRequest(BaseModel):
     refresh_token: str
 
